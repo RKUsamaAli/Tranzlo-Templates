@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What We Changed &amp; Why — Rehabilitation Assessment</title>
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/print.css">
+<style>
+  .doc{max-width:980px;margin:0 auto;padding:28px 22px 70px}
+  .doc h1{font-size:26px;margin-bottom:6px}
+  .lede{color:var(--muted);font-size:14.5px;max-width:760px;margin:0 0 22px}
+  .chg{border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin-bottom:14px;overflow:hidden}
+  .chg > .h{display:flex;align-items:center;gap:11px;padding:11px 15px;background:#fbfdfd;border-bottom:1px solid var(--line-2)}
+  .chg > .h .sec{background:var(--teal-700);color:#fff;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}
+  .chg > .h .ttl{font-weight:700;font-size:14px}
+  .chg > .h .st{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:3px 8px;white-space:nowrap}
+  .st.decide{background:var(--red-bg);color:var(--red);border:1px solid var(--red-line)}
+  .st.safety{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
+  .st.applied{background:var(--green-bg);color:var(--green);border:1px solid var(--green-line)}
+  .st.draft{background:var(--violet-bg);color:var(--violet);border:1px solid var(--violet-line)}
+  .chg .b{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .chg .b > div{padding:12px 15px;font-size:13px;line-height:1.6}
+  .chg .b > div:first-child{border-right:1px solid var(--line-2);background:#fdfdfd}
+  .chg .k{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted);margin-bottom:4px}
+  .chg .why{padding:12px 15px;border-top:1px solid var(--line-2);background:var(--teal-050);font-size:13px;line-height:1.65}
+  .chg .why .k{color:var(--teal-700)}
+  @media(max-width:720px){.chg .b{grid-template-columns:1fr}.chg .b>div:first-child{border-right:none;border-bottom:1px solid var(--line-2)}}
+  .grp-title{font-size:12px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px}
+  .qbox{border:1px solid var(--red-line);background:var(--red-bg);border-radius:var(--radius);padding:16px 18px;margin-bottom:22px}
+  .qbox h3{color:var(--red);font-size:15px;margin-bottom:8px}
+  .qbox ol{margin:0;padding-left:20px} .qbox li{margin:6px 0;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b></div>
+<div class="appbar">
+  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
+  <span class="crumb">What we changed &amp; why</span>
+  <span class="spacer"></span>
+  <a class="btn sm" href="index.html">Journey</a>
+  <a class="btn sm primary" href="assessment.html">Open the assessment →</a>
+  <button class="btn sm" onclick="window.print()">🖨 Print</button>
+</div>
+
+<div class="doc">
+  <h1>What we changed, and why</h1>
+  <p class="lede">
+    We have built your assessment form as a working prototype. In doing so we changed a number of things —
+    not for design preference, but because the form as drawn either could not record the finding, could not be
+    completed honestly, or would create a problem downstream. Every change is listed below with the reason.
+    Each one also appears as an expandable purple <b>CHANGE</b> panel on the screen where it applies.
+    Nothing here is final: tell us which changes you want reversed and we will reverse them.
+  </p>
+
+  <div class="qbox">
+    <h3>We need four answers from you before implementation</h3>
+    <ol>
+      <li><b>Range of motion — degrees or the 0–4 score?</b> The prototype uses degrees; your original 0–4 scale is a one-line switch. See change #2.</li>
+      <li><b>Sections 1 and 6–9</b> — your numbering references them but no images were supplied. We have drafted them. Please confirm or send the originals.</li>
+      <li><b>Standardised outcome measures</b> — are GMFM, GMFCS, MACS or PEDI in scope? Each is a scored instrument and a section of its own.</li>
+      <li><b>Paediatric only, or adults too?</b> Birth and developmental history only applies to children.</li>
+    </ol>
+  </div>
+
+  <div class="grp-title">Changes that affect what the form can record</div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§10</span><span class="ttl">The Ashworth table has been rebuilt</span><span class="st decide">Please review</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Header reads <b>Body Region | Left MAS Grade | Right MAS Grade | Notes</b>, but each row pairs two <i>different</i> muscles — "Elbow Flexors" in column 1 and "Elbow Extensors" in column 3. The column labelled "Right" is therefore not the right side of the body.</div>
+      <div><span class="k">Prototype</span>One muscle group per row, with a genuine <b>Left</b> and <b>Right</b> grade. You choose which groups to load from a catalogue, exactly as in sections 11 and 12.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>In cerebral palsy and hemiplegia the difference between the two sides <i>is</i> the finding — it drives which side is treated, which side is splinted, and whether Botulinum toxin is indicated. A table that cannot express left versus right cannot support that decision, and cannot show progress on one side.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§11</span><span class="ttl">Range of motion recorded in degrees, not as a score out of 4</span><span class="st decide">Decision needed</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Each ROM cell is a value out of four — <b>1/4</b>, <b>2/4</b> and so on.</div>
+      <div><span class="k">Prototype</span>Degrees, with the normal range printed under each motion and out-of-range values highlighted. Your 0–4 scale is retained and can be switched on by changing one setting.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Range of motion is an angular measurement taken with a goniometer; there is no recognised 0–4 range-of-motion scale. A child whose hip abduction improves from 20° to 45° has made real, reportable progress — but on a 0–4 scale they stay at "2/4" and the improvement is invisible to you, to the referrer and to the family. You would also be unable to compare against normal ranges or produce outcome reports. <b>If you want the 0–4 scale, we will keep it — but please decide deliberately, not by default.</b></div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§11</span><span class="ttl">Combined motions split into separate rows</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Single rows for "Shoulder Flex/Ext", "Hip Flex/Ext", "Ankle DF/PF" — two opposite motions sharing one value.</div>
+      <div><span class="k">Prototype</span>Each direction is its own row with its own normal range. The list is longer, but you only load the motions you actually tested.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Flexion and extension have completely different normal ranges, and a child commonly has full flexion with a severe extension limitation — an equinus ankle is the classic example. One value for both hides exactly the finding being looked for.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§5, §3</span><span class="ttl">"Radio Selection" changed to multi-select with an exclusive option</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>The Respiratory row is marked <i>(Radio Selection)</i> — only one of Clear / Wheeze / Crackles / Secretions / Tracheostomy / O2 support may be chosen. Birth Complications lists "Nil" alongside real findings; Skin lists "Intact"; Vision/Hearing lists "Normal".</div>
+      <div><span class="k">Prototype</span>Multi-select everywhere, with one option marked exclusive. Ticking <b>Clear</b> / <b>Nil</b> / <b>Intact</b> / <b>Normal</b> clears the rest; ticking any finding clears the exclusive option.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>A child can have a tracheostomy <i>and</i> secretions <i>and</i> be on oxygen simultaneously — that is a routine picture, not an edge case. A radio button forces the therapist to record one of the three, and the two dropped are usually the two that matter for handling the child safely. The exclusive-option rule keeps "Clear" and "Wheeze" from ever being ticked together.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§5, §10</span><span class="ttl">Muscle tone is no longer asked twice</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Section 5 asks Hypotonia / Hypertonia / Spasticity / Ataxia. Section 10 asks Overall Tone: Normal / Hypotonia / Hypertonia / Fluctuating / Mixed.</div>
+      <div><span class="k">Prototype</span>Section 5 is a quick screen; section 10 is the source of truth and pre-fills from it. Contradicting the screen raises an amber note rather than silently storing two answers.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Two independent answers to the same clinical question will eventually disagree, and once they do neither can be trusted. Reporting also breaks: which field does a tone-distribution report count?</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§5</span><span class="ttl">Neurological split into two questions</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>One row mixes <b>Alert / GCS impaired</b> with <b>Hypotonia / Hypertonia / Spasticity / Ataxia</b>.</div>
+      <div><span class="k">Prototype</span>Two questions: level of consciousness (single choice) and neurological findings (multi-select).</div>
+    </div>
+    <div class="why"><span class="k">Why</span>These are different clinical axes and a child has an answer to both at the same time. Mixed into one list, the therapist must choose between recording that the child is alert and recording that the child is spastic.</div>
+  </div>
+
+  <div class="grp-title">Changes that protect data quality</div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§10–12</span><span class="ttl">"Not Tested" with a reason on every measurement</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your instruction</span>All fields in the grids are required.</div>
+      <div><span class="k">Prototype</span>Still required — but a cell is satisfied by <b>either</b> a value <b>or</b> "Not tested" plus a reason (unable to cooperate, pain, fixed contracture, cast in situ, absent limb, refused…). Blank remains an error.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Some measurements genuinely cannot be taken. If the form refuses to accept that, therapists type a "1" to get past validation — and your database then says the child had severe restriction when in fact nobody tested them. An explicit "not tested, because…" is honest data that a reviewer can act on; a forced number is data that quietly misleads. This single change protects the credibility of everything else in sections 10 to 12.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§10–12</span><span class="ttl">Select first, then fill — instead of a fixed table</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Fixed tables of 12–13 rows, most left blank on any given assessment.</div>
+      <div><span class="k">Prototype</span>You pick the joints or muscle groups you tested, and only those rows load. One-click presets — <b>Upper limb</b>, <b>Lower limb</b>, <b>Spine</b>, <b>CP baseline</b>, <b>Full body</b> — load a whole screen at once. This is what you asked for, applied identically to all three grids.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>A fixed table trains people to leave blanks, and a blank is ambiguous — was it normal, or never tested? Loading only what was tested makes every visible row meaningful, and makes a long, clinically correct catalogue (30 separate motions) practical instead of overwhelming.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§3</span><span class="ttl">Milestones interpret themselves, and allow "not achieved"</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Plain number fields — "Head Control 35 month", "Walking 35 month".</div>
+      <div><span class="k">Prototype</span>Number of months, plus a <b>Not achieved yet</b> option, plus an automatic flag: <b>Within range</b> / <b>Mild delay</b> / <b>Significant delay</b>, measured against normal ages shown beside each field.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Two reasons. A child with cerebral palsy who has never walked cannot be given a number at all, so the original form has no valid answer for precisely the patients this department sees most. And "walking at 35 months" only means something to a reader who remembers that typical is 12 — the form should state it rather than rely on memory, particularly for junior staff.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§4</span><span class="ttl">Complaints, factors and goals are structured</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Free-text boxes for chief complaint, aggravating factors, relieving factors, and one box for all parent/child goals.</div>
+      <div><span class="k">Prototype</span>Common options to tap, with the free-text box still there underneath. Goals become separate rows, each with a priority.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>With free text alone, "delayed milestones", "delay in milestone" and "milestone delay" become three different things and you can never report on your own caseload. And goals buried in one paragraph cannot be marked achieved individually at discharge — which is the one thing a rehabilitation service is judged on.</div>
+  </div>
+
+  <div class="grp-title">Changes for patient safety and governance</div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§2</span><span class="ttl">Allergies moved to the patient record</span><span class="st safety">Patient safety</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>A free-text "Allergies" row inside the rehabilitation assessment.</div>
+      <div><span class="k">Prototype</span>Severity-coded entries on the patient's permanent record — displayed and editable here, but stored once at patient level and visible to OPD, the ward and pharmacy.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>An allergy typed into a physiotherapy form is invisible to everyone else treating the child. That is a patient-safety gap and a standard accreditation finding. Recording it once, at patient level, is the only safe design.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">All</span><span class="ttl">Precautions follow the therapist through the form</span><span class="st safety">Patient safety</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>A checkbox row at the bottom of section 2 — bone fragility, cardiac, respiratory, seizures, shunt, orthopaedic, skin integrity.</div>
+      <div><span class="k">Prototype</span>Whatever is ticked appears as a <b>red banner pinned under the patient name on every section</b> and on the printed record. Bone fragility and Orthopaedic require a short note (which segment, weight-bearing status).</div>
+    </div>
+    <div class="why"><span class="k">Why</span>A therapist about to mobilise a child with osteogenesis imperfecta or a VP shunt should not be relying on a checkbox they ticked eight screens earlier. This is the cheapest safety improvement in the whole form.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§1, §2, §7</span><span class="ttl">Fields owned by another department are read-only, with a source badge</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Rows annotated "will be in opd" and "will be in rehab", with no visual difference between them.</div>
+      <div><span class="k">Prototype</span>Inherited fields render as read-only cards badged <i>From OPD — Dr. Ahmed Raza, 18-Aug-2026</i>, with a <b>Request amendment</b> action. Fields owned by rehabilitation are normal inputs.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>When the same field is typed in two departments the copies disagree within weeks and nobody knows which is correct. And a therapist silently editing the consultant's diagnosis destroys the record of who decided what — an amendment request keeps the audit trail intact while still letting the therapist raise the correction.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">Sign-off</span><span class="ttl">Draft → Signed, with addenda instead of silent edits</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>No attribution or sign-off block.</div>
+      <div><span class="k">Prototype</span>Therapist name and licence number, date and time, supervising consultant, and a status that moves from Draft to Signed. After signing, corrections are recorded as dated addenda.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>A clinical record has to answer "who recorded this, when, and has it changed since". An editable-forever form cannot, and that is the first question an auditor — or a lawyer — asks.</div>
+  </div>
+
+  <div class="grp-title">Changes to how the form is used</div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">All</span><span class="ttl">Free navigation instead of a locked step-by-step wizard</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Original plan</span>A linear wizard: complete a step, press Next, repeat.</div>
+      <div><span class="k">Prototype</span>A section list down the left with per-section status, free movement in any order, automatic draft saving, Back/Next still available for the guided path, and a single <b>Complete assessment</b> action that lists everything outstanding as clickable links.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Therapists assess in whatever order the child cooperates, and frequently finish a form across two visits. A wizard that refuses to advance traps them on a section the child would not tolerate. Validation still happens — but at the end, all at once, where it can be acted on.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§11</span><span class="ttl">Pain is scored on an age-appropriate scale</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>A Yes/No pain column in the ROM table.</div>
+      <div><span class="k">Prototype</span>The pain checkbox reveals a score, using the instrument matched to the child's age — FLACC under 3, Wong-Baker FACES for 3–7, Numeric 0–10 from 8.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Yes/No carries almost no information: mild discomfort and pain that stops the session look identical in the record. And asking a two-year-old to rate pain out of ten produces a meaningless number — the instrument has to match the child.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§12</span><span class="ttl">Method column removed; grades chosen, not typed</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>A "Method" column, annotated <i>skip</i>. Grades typed as free text.</div>
+      <div><span class="k">Prototype</span>Column removed as instructed. Grades are selected from valid MRC values including 4-, 4 and 4+.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Typed grades arrive as "4", "4/5", "four", "4-5" and "gd 4". A dropdown makes strength data comparable between therapists and across visits.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">All</span><span class="ttl">Printing designed in from the start</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Not in the original</span>No print consideration.</div>
+      <div><span class="k">Prototype</span>Press <b>Print</b> anywhere in the assessment. The printed record shows only what was actually recorded — not forty empty checkboxes — with the patient header, precaution banner, signature block and page numbering.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>The signed hard copy still goes into the patient file. Printing that reproduces the blank form wastes paper and buries the findings among unticked boxes.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">§1, §6–9</span><span class="ttl">Sections we drafted because no image was supplied</span><span class="st draft">Needs your input</span></div>
+    <div class="b">
+      <div><span class="k">Your images</span>Sections 2, 3, 4, 5, 10, 11 and 12.</div>
+      <div><span class="k">Prototype</span>Sections 1 (Patient &amp; Visit Details), 6 (Pain), 7 (Anthropometry &amp; Observation), 8 (Reflexes &amp; Reactions) and 9 (Sensory Assessment) drafted by us and clearly badged <b>DRAFT</b>.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>Your numbering jumps from 5 to 10, so these sections exist in your form but were not sent. Rather than leave gaps in a form you are reviewing, we have proposed what a paediatric neuro-rehabilitation assessment normally contains at those positions. Replace them with your originals and nothing else in the prototype changes.</div>
+  </div>
+
+  <div style="margin-top:30px;display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn primary" href="assessment.html">Open the assessment →</a>
+    <a class="btn" href="index.html">Back to the patient journey</a>
+  </div>
+</div>
+</body>
+</html>

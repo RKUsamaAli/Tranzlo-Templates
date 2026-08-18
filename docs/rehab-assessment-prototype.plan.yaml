@@ -1,0 +1,557 @@
+# =============================================================================
+#  PAEDIATRIC REHABILITATION ASSESSMENT — CLICKABLE HTML PROTOTYPE
+#  Staged build plan + design specification (client sign-off document)
+# =============================================================================
+meta:
+  document: Rehab Assessment Prototype — Plan & Spec
+  version: 0.2.0
+  status: BUILT — awaiting client review
+  built:
+    - Stages S1-S8 implemented. Open index.html to review.
+    - Every change from the `challenges` list below is explained on screen in an
+      expandable CHANGE panel, and consolidated in change-notes.html.
+    - Q1 (ROM degrees vs 0-4) shipped BOTH ways; flip `romMode` in assets/js/config.js.
+  author: Usama Ali
+  date: 2026-08-18
+  purpose: >
+    Static, dependency-free HTML/CSS/JS prototype of the Rehabilitation
+    Assessment form, used to obtain client approval BEFORE implementation in
+    the production application. No backend, no framework — but every option
+    list and grid is driven from a JSON config so the approved prototype
+    converts 1:1 into a reactive-form schema at implementation time.
+  non_goals:
+    - No database, no API, no authentication.
+    - No implementation of Registration / Vitals / OPD screens (mocked only).
+    - No sections beyond #12 in this round (placeholders only).
+
+# -----------------------------------------------------------------------------
+# 1. PATIENT JOURNEY — where this form sits
+# -----------------------------------------------------------------------------
+patient_journey:
+  steps:
+    - id: J1
+      name: Patient Registration & Visit
+      status: MOCKED
+      note: Prototype ships a seeded demo patient; screen is a read-only summary card.
+    - id: J2
+      name: Vital Signs
+      status: MOCKED
+      note: Values surface in the sticky patient banner (HR, RR, SpO2, Temp, BP).
+    - id: J3
+      name: OPD Consultation
+      status: MOCKED — but it OWNS data this form consumes
+      owns_fields: [Primary Diagnosis, Relevant Medical History]
+    - id: J4
+      name: Referral to Department (Rehabilitation / Physiotherapy)
+      status: MOCKED
+      note: Referral card shows referring doctor, reason, priority, date.
+    - id: J5
+      name: Rehabilitation Assessment  # <-- THIS PROTOTYPE
+      status: BUILD NOW (sections 1-12)
+      note: Sections 13+ are labelled placeholders pending client requirements.
+    - id: J6
+      name: Treatment Plan / Goals / Session Notes / Re-assessment / Discharge
+      status: PLACEHOLDER ONLY
+
+# -----------------------------------------------------------------------------
+# 2. CHALLENGES TO THE PLAN AS GIVEN
+#    Each item = what is wrong or risky, why it matters clinically/commercially,
+#    and the recommendation. Items marked BLOCKER change what gets built.
+# -----------------------------------------------------------------------------
+challenges:
+
+  - id: C01
+    severity: BLOCKER
+    area: Section 10 — Modified Ashworth Scale grid
+    issue: >
+      The table header reads "Body Region | Left MAS Grade | Right MAS Grade |
+      Notes", but the rows pair TWO DIFFERENT muscle groups per row
+      (e.g. "Elbow Flexors" in col 1 and "Elbow Extensors" in col 3). So the
+      "Right MAS Grade" column is not the right side — it is the grade of a
+      second, different muscle. The table is mislabelled and unusable as drawn.
+    risk: >
+      Data captured on the left/right axis is clinically meaningless. In CP
+      and hemiplegia, left-vs-right asymmetry IS the finding. Getting this
+      wrong invalidates the whole tone assessment.
+    recommendation: >
+      Rebuild section 10 with the SAME select-then-grid pattern as sections 11
+      and 12: therapist multi-selects muscle groups (Elbow Flexors, Elbow
+      Extensors, Wrist Flexors, ... Ankle PF), and each selected group loads
+      one row with columns [Left MAS, Right MAS, Notes]. Correct, consistent,
+      and reuses one component instead of three.
+
+  - id: C02
+    severity: BLOCKER
+    area: Section 11 — Range of Motion recorded as "x/4"
+    issue: >
+      ROM is being captured on a 0-4 scale (suffix "/4"). Range of motion is
+      not a graded scale — it is an angular measurement in degrees, taken with
+      a goniometer. There is no recognised 4-point ROM scale.
+    risk: >
+      Cannot track progress (a child moving 20 deg -> 45 deg is real progress
+      but stays "2/4"), cannot compare against normative ranges, cannot
+      produce outcome reports, and reviewers/regulators will flag it.
+    recommendation: >
+      Default to DEGREES per motion, with the normal reference range shown as
+      helper text and out-of-range values highlighted. Keep a per-section
+      config switch (`scale: degrees | graded`) so if the client insists on
+      the 0-4 grade, it is a one-line config change, not a rebuild.
+      DECISION REQUIRED — see open_questions Q1.
+
+  - id: C03
+    severity: HIGH
+    area: Section 11 — one row for two opposite motions
+    issue: >
+      "Shoulder Flex/Ext", "Hip Flex/Ext", "Ankle DF/PF" put two opposing
+      motions with different normal ranges into a single row with a single
+      value.
+    risk: A child can have full flexion and severe extension limitation; one value hides it.
+    recommendation: >
+      Split into discrete motions in the selection catalogue (Shoulder Flexion,
+      Shoulder Extension, ...). The multi-select picker makes the longer list
+      painless because the therapist only loads what they test.
+
+  - id: C04
+    severity: HIGH
+    area: All grids — "all fields required"
+    issue: >
+      Requiring every cell (L PROM, L AROM, R PROM, R AROM) blocks legitimate
+      clinical realities: unilateral involvement, an uncooperative or
+      non-verbal child, contracture preventing testing, absent limb, pain.
+    risk: Therapists will enter junk values (0 or 1) just to pass validation. Data becomes garbage.
+    recommendation: >
+      Every measurement cell supports an explicit "NT" (Not Tested) state with
+      a required reason (Unable to cooperate / Pain / Contracture /
+      Not applicable / Refused). Row is complete when each cell has EITHER a
+      value OR an NT+reason. Blank stays invalid. This is how real clinical
+      forms handle it and it is a strong demo talking point.
+
+  - id: C05
+    severity: HIGH
+    area: Section 2 — Allergies captured inside a rehab form
+    issue: Allergies are patient-level, lifelong, safety-critical data — not a per-assessment text field.
+    risk: An allergy typed here is invisible to OPD, pharmacy, and the next department. Patient-safety defect.
+    recommendation: >
+      Render Allergies as a read-from / write-to the patient-level allergy
+      registry: shown as removable severity-coded chips with an "Add allergy"
+      action that explicitly states it updates the patient record globally.
+      Same treatment for Precautions.
+
+  - id: C06
+    severity: HIGH
+    area: Section 2 — Precautions / Contraindications buried in a checkbox row
+    issue: Safety flags (bone fragility, seizures, shunt, cardiac, respiratory) sit mid-form and are never seen again.
+    risk: A therapist mobilising a child with osteogenesis imperfecta or a VP shunt because the flag was three screens back.
+    recommendation: >
+      Selected precautions render as a persistent red banner pinned under the
+      patient header on EVERY subsequent step and on the printed form.
+      "Bone fragility" and "Orthopaedic" require a mandatory free-text detail
+      (which segment, weight-bearing status).
+
+  - id: C07
+    severity: HIGH
+    area: Section 5 — "Radio Selection" on non-exclusive findings
+    issue: >
+      Respiratory is marked as radio, but Clear / Wheeze / Crackles /
+      Secretions / Tracheostomy / O2 support are NOT mutually exclusive —
+      a child can have a tracheostomy, secretions and O2 simultaneously.
+      Same problem: Birth Complications includes "Nil" alongside real findings;
+      Skin Integrity includes "Intact"; Vision/Hearing includes "Normal".
+    recommendation: >
+      Adopt one house rule: MULTI-SELECT with a designated EXCLUSIVE option.
+      Selecting Nil / Clear / Intact / Normal clears all siblings; selecting
+      any finding clears the exclusive option. One reusable component,
+      `data-exclusive="true"`, applied everywhere.
+
+  - id: C08
+    severity: MEDIUM
+    area: Section 5 vs Section 10 — muscle tone captured twice
+    issue: >
+      Section 5 Neurological offers Hypotonia / Hypertonia / Spasticity /
+      Ataxia; Section 10 asks Overall Tone: Normal / Hypotonia / Hypertonia /
+      Fluctuating / Mixed. Two answers to the same clinical question that will
+      disagree.
+    recommendation: >
+      Section 5 stays a SCREEN (yes/no flags, quick). Section 10 is the
+      SOURCE OF TRUTH (detailed). Section 10 auto-prefills from section 5 and
+      shows a soft warning if the therapist contradicts the screen.
+      Also split "Alert / GCS impaired" out of the tone list — level of
+      consciousness is a different axis and needs its own control.
+
+  - id: C09
+    severity: MEDIUM
+    area: Section 3 — developmental milestones as bare numbers
+    issue: >
+      "Head Control 35 month" etc. is a plain number with a suffix. There is
+      no way to record "not achieved yet", and no clinical interpretation.
+    recommendation: >
+      Milestone control = number(months) + "Not achieved yet" toggle +
+      automatic delay flag against normative values (head control ~3, sitting
+      ~6, standing ~9, walking ~12, first words ~12 months). Green / amber /
+      red chip beside each field. Cheap to build, and it is the single feature
+      that makes clinicians say "yes, they understand our work".
+      NOTE: birth + developmental history is STATIC patient history — capture
+      once, carry forward read-only on re-assessments with an "amend" action.
+
+  - id: C10
+    severity: MEDIUM
+    area: Section 11 — Pain as a "Yes/No" column
+    issue: A yes/no pain flag in a ROM row carries almost no clinical information.
+    recommendation: >
+      Pain checkbox reveals an age-appropriate scale, auto-selected from the
+      patient's DOB: FLACC (non-verbal / under 3), Wong-Baker FACES (3-7),
+      Numeric 0-10 (8+). Demonstrates age-awareness of the whole form.
+
+  - id: C11
+    severity: MEDIUM
+    area: Cross-module fields marked "will be in OPD" / "will be in rehab"
+    issue: The form mixes fields it OWNS with fields it INHERITS, with no visual distinction.
+    recommendation: >
+      Inherited fields (Primary Diagnosis, Relevant Medical Hx from OPD;
+      vitals from J2) render as read-only cards with a provenance badge —
+      "From OPD - Dr. Ahmed, 18-Aug-2026". They are never editable in place;
+      an "Request amendment" action is offered instead. Owned fields render as
+      normal inputs. Removes the single biggest source of duplicate/conflicting
+      data in multi-department systems.
+
+  - id: C12
+    severity: MEDIUM
+    area: Navigation — "stepwise wizard"
+    issue: >
+      A strictly linear 12+ step next/next/next wizard is hostile to
+      clinicians, who assess in whatever order the child cooperates and often
+      finish a form across two visits.
+    recommendation: >
+      Persistent left section rail with per-section completion state
+      (empty / partial / complete / has-errors), free navigation, autosave
+      draft, and a single "Complete Assessment" action that runs full
+      validation and lists every outstanding item as clickable links.
+      Keep Back/Next buttons for the guided path — but do not lock.
+
+  - id: C13
+    severity: MEDIUM
+    area: Missing sections
+    issue: >
+      Images were supplied for sections 2, 3, 4, 5, 10, 11, 12.
+      Sections 1 and 6-9 were NOT supplied but are referenced by numbering.
+    recommendation: >
+      Prototype ships with reasoned drafts so the client sees a complete form:
+      1 Patient & Visit Details, 6 Pain Assessment, 7 Anthropometry &
+      Observation, 8 Reflexes & Reactions, 9 Sensory Assessment.
+      These are clearly badged "DRAFT - pending your input".
+      REQUEST: please send images for 1 and 6-9.
+
+  - id: C14
+    severity: MEDIUM
+    area: Printing
+    issue: Pakistani hospital workflow still files a signed hard copy; this is always asked for in the first demo.
+    recommendation: >
+      Ship a print stylesheet from day one. Print output shows only completed
+      data (not 40 empty checkboxes), includes patient header, precaution
+      banner, therapist name/licence, signature block and page x of y.
+
+  - id: C15
+    severity: LOW
+    area: Selection-driven grids — data loss
+    issue: De-selecting a joint/muscle after entering values silently destroys that data.
+    recommendation: >
+      Confirm before removing a row that has data. Additionally ship
+      SELECTION PRESETS (Upper Limb Screen, Lower Limb Screen, Full Body,
+      CP Baseline, Post-op Knee) so a therapist loads 12 rows in one click
+      instead of 12 clicks — the strongest usability win in this form.
+
+  - id: C16
+    severity: LOW
+    area: Re-assessment / progress
+    issue: The form as specified only ever captures "now" with no comparison to last time.
+    recommendation: >
+      On re-assessment, previously selected rows auto-load and each cell shows
+      the previous value as ghost text with a delta arrow. Add to the
+      prototype as a toggle ("Show comparison with 12-Jul-2026") — it sells.
+
+  - id: C17
+    severity: LOW
+    area: Governance
+    issue: No attribution, sign-off, or amendment model specified.
+    recommendation: >
+      Footer block: assessed by (name + licence no.), date/time, supervising
+      consultant, status Draft -> Signed. After signing the form is read-only
+      and changes are recorded as addenda. Clients and auditors always ask.
+
+  - id: C18
+    severity: LOW
+    area: Locale & units
+    recommendation: >
+      Dates dd-MMM-yyyy, weight kg, height/length cm, gestational age as
+      weeks+days, NICU/ventilation duration in days, 24h clock.
+      Urdu/RTL is out of scope for this round — confirm.
+
+# -----------------------------------------------------------------------------
+# 3. DECISIONS
+# -----------------------------------------------------------------------------
+decisions:
+  settled:
+    - Prototype is static HTML + CSS + vanilla JS, no build step, opens by double-click.
+    - All option lists, grid catalogues and validation rules live in `assessment.config.js`.
+    - Section rail navigation with free movement + autosave, not a locked wizard.
+    - Select-then-grid pattern is used identically in sections 10, 11 and 12.
+    - Suffix inputs (value + fixed unit/denominator) are one shared component.
+    - Exclusive-option multi-select is one shared component.
+    - Sections 13+ are labelled placeholders only.
+    - Desktop-first, but usable on a 10-inch tablet in landscape (therapists carry tablets).
+
+  open_questions:
+    - id: Q1
+      question: ROM — degrees (recommended) or the 0-4 graded scale as drawn?
+      impact: Changes section 11 inputs, validation and reporting.
+      default_if_no_answer: Build BOTH, ship with degrees ON, config flag to flip.
+    - id: Q2
+      question: Please supply images / requirements for sections 1 and 6-9.
+      default_if_no_answer: Ship reasoned drafts badged "DRAFT".
+    - id: Q3
+      question: Which standardised outcome measures are in scope (GMFM-66/88, GMFCS, MACS, PEDI, Berg Balance, 6MWT)?
+      impact: These are scored instruments; each is a section of its own.
+      default_if_no_answer: Placeholder section only.
+    - id: Q4
+      question: Is the assessment per-visit or per-episode-of-care (one assessment, many sessions)?
+      impact: Drives re-assessment and comparison UX.
+      default_if_no_answer: Per-episode with dated re-assessments.
+    - id: Q5
+      question: Is Urdu / RTL printing required for parent-facing home-programme handouts?
+      default_if_no_answer: Out of scope this round.
+    - id: Q6
+      question: Adult rehab too, or paediatric only? (Birth/developmental history is paediatric-specific.)
+      default_if_no_answer: Paediatric only; age-gate sections 3 and 6.
+
+# -----------------------------------------------------------------------------
+# 4. SHARED COMPONENT LIBRARY  (built once in stage 1, reused everywhere)
+# -----------------------------------------------------------------------------
+components:
+
+  - id: suffix-input
+    used_by: [S3 milestones, S11 ROM, S12 MRC, S10 MAS]
+    spec: >
+      Numeric input with a non-editable suffix rendered inside the field
+      ("/4", "/5", "months", "deg", "kg"). Suffix and min/max come from config.
+      Keyboard: arrows step, out-of-range shakes and shows the allowed range.
+
+  - id: exclusive-multiselect
+    used_by: [S2 precautions, S3 birth complications, S5 all rows]
+    spec: >
+      Checkbox group where one option may be flagged exclusive
+      (Nil / Clear / Intact / Normal / Alert). Selecting it clears the rest;
+      selecting any other clears it. Renders as pill chips, not raw checkboxes.
+
+  - id: catalogue-picker
+    used_by: [S10, S11, S12]
+    spec: >
+      Modal / slide-over listing the catalogue for that section, grouped by
+      body region, with search, group select-all, presets, and a live count
+      ("14 selected"). Confirm applies the selection to the grid.
+
+  - id: dynamic-grid
+    used_by: [S10, S11, S12]
+    spec: >
+      Renders one row per selected catalogue item. Columns come from config
+      (S11 -> L PROM, L AROM, R PROM, R AROM, Pain, Notes;
+       S12 -> L Grade, R Grade, Notes;
+       S10 -> L MAS, R MAS, Notes).
+      Row actions - remove (with confirm if dirty), copy-left-to-right,
+      mark whole row Not Tested. Sticky header, sticky first column,
+      horizontal scroll on narrow screens, keyboard tab flows across the row.
+
+  - id: not-tested-cell
+    spec: Any measurement cell can be switched to NT + reason. Cell greys out and satisfies "required".
+
+  - id: milestone-field
+    spec: suffix-input(months) + "Not achieved" toggle + normative delay chip (green/amber/red).
+
+  - id: pain-scale
+    spec: Age-selected FLACC / Wong-Baker FACES / NRS 0-10, revealed by a pain checkbox.
+
+  - id: inherited-field
+    spec: Read-only card with provenance badge and "Request amendment" action.
+
+  - id: precaution-banner
+    spec: Sticky red banner listing active precautions; visible on every section and on print.
+
+  - id: patient-header
+    spec: >
+      Sticky top bar - photo/initials, name, MRN, age (computed from DOB),
+      sex, ward/clinic, primary diagnosis, latest vitals chips,
+      referral source, assessment status pill.
+
+  - id: section-rail
+    spec: Left navigation listing sections with completion state and error counts.
+
+# -----------------------------------------------------------------------------
+# 5. SECTION MAP  (what gets built, and from which image)
+# -----------------------------------------------------------------------------
+sections:
+  - n: 1
+    title: Patient & Visit Details
+    source: NOT SUPPLIED - draft
+  - n: 2
+    title: Diagnosis & Medical History
+    source: image 1
+  - n: 3
+    title: Birth & Developmental History
+    source: image 2
+  - n: 4
+    title: Presenting Complaint & Goals
+    source: image 3
+  - n: 5
+    title: Systems Review
+    source: image 4
+  - n: 6
+    title: Pain Assessment
+    source: NOT SUPPLIED - draft
+  - n: 7
+    title: Anthropometry & Observation
+    source: NOT SUPPLIED - draft
+  - n: 8
+    title: Reflexes & Reactions
+    source: NOT SUPPLIED - draft
+  - n: 9
+    title: Sensory Assessment
+    source: NOT SUPPLIED - draft
+  - n: 10
+    title: Posture & Muscle Tone (MAS)
+    source: image 5
+  - n: 11
+    title: Range of Motion (PROM / AROM)
+    source: image 6
+  - n: 12
+    title: Muscle Strength (MRC / Kendall)
+    source: image 7
+  - n: "13+"
+    title: PLACEHOLDERS
+    items:
+      - Balance & Coordination
+      - Gait Analysis
+      - Functional Mobility
+      - Standardised Outcome Measures
+      - Assessment Summary
+      - Goals (SMART)
+      - Treatment Plan
+      - Home Programme
+      - Sign-off
+    source: PENDING CLIENT
+
+# -----------------------------------------------------------------------------
+# 6. STAGED BUILD PLAN
+# -----------------------------------------------------------------------------
+stages:
+
+  - id: S0
+    name: Approval of this document
+    owner: Client
+    output: Answers to open_questions Q1-Q6, images for sections 1 and 6-9.
+    blocking: true
+    note: Stage 1 can start without it; stages 3-5 cannot be finalised without Q1.
+
+  - id: S1
+    name: Design system, shell & component library
+    est: 1 day
+    deliverables:
+      - index.html            # journey landing page with the 5 mocked steps
+      - assets/css/theme.css  # teal/slate palette matching the supplied form
+      - assets/css/print.css
+      - assets/js/components.js
+      - assets/js/assessment.config.js
+    contains:
+      - Patient header, precaution banner, section rail, autosave indicator.
+      - All components from section 4, demonstrated on a component gallery page.
+    acceptance:
+      - Every component works standalone with no console errors.
+      - Print preview of the shell is clean.
+
+  - id: S2
+    name: Journey mock — Registration, Vitals, OPD, Referral
+    est: 0.5 day
+    deliverables: [ journey/registration.html, journey/vitals.html, journey/opd.html, journey/referral.html ]
+    contains:
+      - Read-only cards populated from a seeded demo patient (synthetic data only).
+      - OPD screen shows which of its fields flow into the rehab form (highlighted).
+      - Button labelled 'Refer to Rehabilitation' lands on the assessment.
+    acceptance: Client can click end-to-end from registration to assessment.
+
+  - id: S3
+    name: Assessment sections 1-5
+    est: 1.5 days
+    covers: [1, 2, 3, 4, 5]
+    contains:
+      - Inherited-field treatment for Primary Dx and Relevant Medical Hx (C11).
+      - Allergy chips writing to the patient-level registry (C05).
+      - Precautions driving the sticky banner + mandatory detail (C06).
+      - Milestone fields with delay flags and "Not achieved" (C09).
+      - Exclusive-multiselect applied across the whole Systems Review (C07).
+    acceptance: Sections show empty / partial / complete state correctly in the rail.
+
+  - id: S4
+    name: Section 10 — Posture & Muscle Tone
+    est: 1 day
+    contains:
+      - MAS reference table (collapsible, collapsed by default).
+      - Catalogue picker + dynamic grid, columns [Left MAS, Right MAS, Notes] (C01).
+      - General tone assessment with prefill + contradiction warning from S5 (C08).
+    acceptance: Selecting 4 muscle groups loads exactly 4 rows; de-select with data warns.
+
+  - id: S5
+    name: Section 11 — Range of Motion
+    est: 1 day
+    contains:
+      - Motion catalogue split into discrete motions, grouped by region (C03).
+      - Grid columns L PROM / L AROM / R PROM / R AROM / Pain / Notes.
+      - Degrees-vs-graded config switch (C02), normal-range helper text.
+      - Not-Tested cells with reason (C04); age-appropriate pain scale (C10).
+      - Presets: Upper Limb, Lower Limb, Spine, Full Body, CP Baseline (C15).
+    acceptance: A 14-row grid stays usable and keyboard-navigable on a 10-inch tablet.
+
+  - id: S6
+    name: Section 12 — Muscle Strength
+    est: 0.5 day
+    contains:
+      - MRC reference table (collapsible).
+      - Muscle-group catalogue + grid [L Grade /5, R Grade /5, Notes].
+      - Column 'Method' dropped per the annotation on the supplied image.
+    acceptance: Identical interaction model to sections 10 and 11 — no new learning.
+
+  - id: S7
+    name: Drafts for sections 6-9, placeholders for 13+, validation & sign-off
+    est: 1 day
+    contains:
+      - Draft sections badged "DRAFT - pending your input".
+      - Placeholder cards for future sections with a one-line description each.
+      - Action 'Complete Assessment' produces a validation summary with clickable error links (C12).
+      - Sign-off block, status pill Draft -> Signed, read-only after signing (C17).
+    acceptance: Attempting to complete with gaps lists every outstanding field.
+
+  - id: S8
+    name: Print, review pack & handover
+    est: 0.5 day
+    contains:
+      - Print stylesheet suppressing empty items (C14).
+      - README with how-to-demo script for the client meeting.
+      - decisions.md capturing what the client approved and what changed.
+    acceptance: A filled assessment prints to clean A4 with signature block.
+
+  - id: S9
+    name: POST-APPROVAL — production implementation
+    status: NOT IN THIS ROUND
+    note: >
+      assessment.config.js becomes the form schema; sections map to reactive
+      form groups; catalogues become reference tables; grids become FormArrays.
+
+# -----------------------------------------------------------------------------
+# 7. RISKS
+# -----------------------------------------------------------------------------
+risks:
+  - risk: Client approves the ROM 0-4 scale and it is rebuilt in degrees six months later.
+    mitigation: Q1 answered in writing before stage 5; both modes shipped in the prototype.
+  - risk: Missing sections 1 and 6-9 turn out to be substantial, expanding scope.
+    mitigation: Drafts are badged, and stage 7 is re-estimated once images arrive.
+  - risk: Prototype gets mistaken for a working product in the demo.
+    mitigation: Persistent "PROTOTYPE - demonstration data only" ribbon; synthetic patient data only.
+  - risk: Standardised outcome measures (GMFM etc.) are assumed to be included.
+    mitigation: Q3; each measure is scoped and priced separately.

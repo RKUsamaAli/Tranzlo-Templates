@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registration &amp; Visit — Prototype</title>
+<link rel="stylesheet" href="../assets/css/theme.css">
+<link rel="stylesheet" href="../assets/css/print.css">
+</head>
+<body>
+<div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b></div>
+<div class="appbar">
+  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
+  <span class="crumb">Step 1 of 5 · <b>Registration &amp; Visit</b></span>
+  <span class="spacer"></span>
+  <a class="btn sm" href="../index.html">Journey</a>
+  <a class="btn sm primary" href="../assessment.html">Rehab Assessment →</a>
+</div>
+<div class="jwrap">
+  <div class="jsteps">
+    <a class="jstep current" href="registration.html"><div class="n">1</div><div class="t">Registration</div></a>
+    <a class="jstep" href="vitals.html"><div class="n">2</div><div class="t">Vital Signs</div></a>
+    <a class="jstep" href="opd.html"><div class="n">3</div><div class="t">OPD</div></a>
+    <a class="jstep" href="referral.html"><div class="n">4</div><div class="t">Referral</div></a>
+    <a class="jstep" href="../assessment.html"><div class="n">5</div><div class="t">Rehab Assessment</div></a>
+  </div>
+  <div class="sec-head"><h2>Registration &amp; Visit</h2><span class="sec-tag">Mocked — existing module</span></div>
+  <div class="card">
+
+    <div class="callout">This screen already exists in your application. It is shown here read-only so you can see
+    <b>exactly which fields the rehabilitation assessment inherits</b> rather than re-typing.</div>
+    <div class="kv">
+      <div>MRN</div><div>MRN-2026-04871 <span class="flows-to">→ Rehab section 1</span></div>
+      <div>Patient name</div><div>Ayaan Khan <span class="flows-to">→ Rehab section 1</span></div>
+      <div>Date of birth</div><div>04-Nov-2021 <span class="flows-to">→ drives age-gated scales in sections 3, 6 &amp; 11</span></div>
+      <div>Sex</div><div>Male</div>
+      <div>Guardian</div><div>Mrs. Sana Khan (Mother)</div>
+      <div>Contact</div><div>+92 300 1234567</div>
+      <div>Address</div><div>Bahria Town, Sector C, Lahore</div>
+      <div>Blood group</div><div>B+</div>
+      <div>Visit no.</div><div>V-2026-118432</div>
+      <div>Visit date / time</div><div>18-Aug-2026 10:35</div>
+      <div>Visit type</div><div>Follow-up</div>
+      <div>Clinic</div><div>Paediatric OPD</div>
+    </div>
+    <div class="callout warn" style="margin-top:16px"><b>Note the date of birth.</b> The rehabilitation form computes the
+    child&rsquo;s age from it and uses that to choose the correct pain instrument and to flag developmental delay.
+    It is not a decorative field.</div>
+  </div>
+</div>
+</body>
+</html>

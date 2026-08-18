@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OPD Consultation — Prototype</title>
+<link rel="stylesheet" href="../assets/css/theme.css">
+<link rel="stylesheet" href="../assets/css/print.css">
+</head>
+<body>
+<div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b></div>
+<div class="appbar">
+  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
+  <span class="crumb">Step 3 of 5 · <b>OPD Consultation</b></span>
+  <span class="spacer"></span>
+  <a class="btn sm" href="../index.html">Journey</a>
+  <a class="btn sm primary" href="../assessment.html">Rehab Assessment →</a>
+</div>
+<div class="jwrap">
+  <div class="jsteps">
+    <a class="jstep done" href="registration.html"><div class="n">1</div><div class="t">Registration</div></a>
+    <a class="jstep done" href="vitals.html"><div class="n">2</div><div class="t">Vital Signs</div></a>
+    <a class="jstep current" href="opd.html"><div class="n">3</div><div class="t">OPD</div></a>
+    <a class="jstep" href="referral.html"><div class="n">4</div><div class="t">Referral</div></a>
+    <a class="jstep" href="../assessment.html"><div class="n">5</div><div class="t">Rehab Assessment</div></a>
+  </div>
+  <div class="sec-head"><h2>OPD Consultation</h2><span class="sec-tag">Mocked — existing module</span></div>
+  <div class="card">
+
+    <div class="callout"><b>This is the screen your form annotated &ldquo;will be in OPD&rdquo;.</b>
+    The two highlighted fields below are owned here and appear in the rehabilitation assessment as read-only
+    cards carrying a source badge, not as editable inputs.</div>
+    <div class="kv">
+      <div>Consultant</div><div>Dr. Ahmed Raza (Paediatric Neurology)</div>
+      <div>Date</div><div>18-Aug-2026</div>
+      <div>Primary diagnosis</div><div><b>Spastic Diplegic Cerebral Palsy</b> &middot; ICD-10 G80.1
+        <span class="flows-to">→ Rehab section 2 (read-only)</span></div>
+      <div>Relevant medical history</div><div>Born at 32 weeks gestation. NICU stay 21 days with ventilatory support for 6 days.
+        HIE grade II documented. Recurrent chest infections in infancy. On Baclofen 5 mg TDS since March 2026.
+        <span class="flows-to">→ Rehab section 2 (read-only)</span></div>
+      <div>Advice</div><div>Refer to Rehabilitation for physiotherapy assessment and management plan.</div>
+    </div>
+    <div class="callout warn" style="margin-top:16px"><b>Why read-only downstream.</b> If a therapist can quietly edit the
+    consultant&rsquo;s diagnosis, the record stops showing who decided what. In the rehabilitation form these fields carry a
+    <b>Request amendment</b> action instead, which raises a dated addendum and leaves the original intact.</div>
+  </div>
+</div>
+</body>
+</html>

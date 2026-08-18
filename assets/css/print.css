@@ -1,0 +1,72 @@
+/* ==========================================================================
+   Print stylesheet (C14) — clean A4 clinical record.
+   Rule: print what was RECORDED, not the empty form.
+   ========================================================================== */
+@media print{
+  @page{size:A4 portrait; margin:12mm 10mm 14mm}
+
+  .proto-ribbon,.appbar,.rail,.actionbar,.picker-bar,.modal-back,
+  .change-note,.callout,.btn,.icon-btn,.nt-btn,.row-tools,
+  .vsummary,.ph-grid,details.ref,.progress-mini,.save-state,
+  .grid-legend{display:none!important}
+
+  body{background:#fff;font-size:10.5pt;color:#000}
+  .layout{display:block}
+  .main{padding:0;max-width:none}
+
+  /* every section prints, regardless of which tab is open */
+  .section{display:block!important;page-break-inside:auto}
+  .sec-head{
+    background:#0f6c7b!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+    color:#fff!important;padding:5px 10px;page-break-after:avoid;border-radius:0;
+  }
+  .sec-head h2{font-size:11pt}
+  .card{border:1px solid #bbb;border-top:none;padding:9px 10px;margin-bottom:11px;border-radius:0}
+
+  .patient-bar{position:static;box-shadow:none;border-bottom:2px solid #0f6c7b}
+  .vitals{margin-left:0}
+  .precaution-banner{
+    background:#fdeceb!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+    border:2px solid #b02a1f;page-break-inside:avoid;
+  }
+
+  /* hide empty inputs & unselected options — C14 */
+  input:not([type=checkbox]):not([type=radio]).is-empty,
+  textarea.is-empty,select.is-empty{display:none}
+  .field.is-empty{display:none}
+  .pill:not(.on){display:none}
+  .pill.on{background:#fff!important;color:#000!important;border:1px solid #333!important;font-weight:700}
+  .pill .tick{display:none}
+  .pills:empty{display:none}
+  .radios label.unchecked{display:none}
+
+  input,select,textarea{border:none!important;border-bottom:1px solid #999!important;border-radius:0!important;padding:1px 2px!important;background:#fff!important}
+  .suffix-input .sfx{background:none!important;border:none!important;position:static;padding:0 0 0 2px}
+  .suffix-input{display:inline-flex}
+
+  .grid-wrap{overflow:visible;border:1px solid #999}
+  table.dgrid{min-width:0;font-size:9pt;page-break-inside:auto}
+  table.dgrid thead th{
+    background:#0f6c7b!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important;
+    position:static;padding:4px 6px;
+  }
+  table.dgrid td{padding:3px 6px}
+  table.dgrid td.rowname{position:static}
+  table.dgrid tr{page-break-inside:avoid}
+  .grid-empty{display:none}
+
+  .inherited{background:#f2f7f8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border:1px solid #99bcc2}
+
+  /* signature block appended on print */
+  .print-only{display:block!important}
+  .signblock{
+    display:grid!important;grid-template-columns:1fr 1fr;gap:26px;margin-top:26px;
+    page-break-inside:avoid;
+  }
+  .signblock .sig{border-top:1px solid #000;padding-top:5px;font-size:9pt}
+  .print-foot{
+    position:fixed;bottom:0;left:0;right:0;font-size:8pt;color:#555;
+    border-top:1px solid #ccc;padding-top:3px;display:flex;justify-content:space-between;
+  }
+}
+.print-only{display:none}

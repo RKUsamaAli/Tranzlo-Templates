@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehabilitation Assessment — Prototype</title>
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/print.css">
+</head>
+<body>
+
+<div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b>, no live patient records</div>
+
+<div class="appbar">
+  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
+  <span class="crumb">Registration › Vitals › OPD › Referral › <b>Rehab Assessment</b></span>
+  <span class="spacer"></span>
+  <label class="toolbar-toggle" title="Show the notes explaining what we changed from your original form and why">
+    <input type="checkbox" id="toggleNotes" checked> Show change notes
+  </label>
+  <label class="toolbar-toggle" title="Show values from the previous assessment beside each field">
+    <input type="checkbox" id="toggleCompare"> Compare with 12-Jul-2026
+  </label>
+  <button class="btn sm" onclick="window.print()">🖨 Print</button>
+  <a class="btn sm" href="index.html">Exit</a>
+</div>
+
+<div class="patient-bar" id="patientBar"></div>
+
+<div class="layout">
+  <!-- ============================ SECTION RAIL ============================ -->
+  <nav class="rail" id="rail">
+    <h4>Assessment sections</h4>
+    <div class="rail-item" data-sec="1"><span class="rail-num">1</span><span class="rail-txt">Patient &amp; Visit Details</span></div>
+    <div class="rail-item" data-sec="2"><span class="rail-num">2</span><span class="rail-txt">Diagnosis &amp; Medical History</span></div>
+    <div class="rail-item" data-sec="3"><span class="rail-num">3</span><span class="rail-txt">Birth &amp; Developmental History</span></div>
+    <div class="rail-item" data-sec="4"><span class="rail-num">4</span><span class="rail-txt">Presenting Complaint &amp; Goals</span></div>
+    <div class="rail-item" data-sec="5"><span class="rail-num">5</span><span class="rail-txt">Systems Review</span></div>
+    <div class="rail-item draft" data-sec="6"><span class="rail-num">6</span><span class="rail-txt">Pain Assessment</span></div>
+    <div class="rail-item draft" data-sec="7"><span class="rail-num">7</span><span class="rail-txt">Anthropometry &amp; Observation</span></div>
+    <div class="rail-item draft" data-sec="8"><span class="rail-num">8</span><span class="rail-txt">Reflexes &amp; Reactions</span></div>
+    <div class="rail-item draft" data-sec="9"><span class="rail-num">9</span><span class="rail-txt">Sensory Assessment</span></div>
+    <div class="rail-item" data-sec="10"><span class="rail-num">10</span><span class="rail-txt">Posture &amp; Muscle Tone</span></div>
+    <div class="rail-item" data-sec="11"><span class="rail-num">11</span><span class="rail-txt">Range of Motion</span></div>
+    <div class="rail-item" data-sec="12"><span class="rail-num">12</span><span class="rail-txt">Muscle Strength</span></div>
+    <h4>Next — awaiting your requirements</h4>
+    <div class="rail-item placeholder" data-sec="13"><span class="rail-num">13</span><span class="rail-txt">Coming next (placeholders)</span></div>
+    <div class="rail-item" data-sec="99"><span class="rail-num">✓</span><span class="rail-txt">Review &amp; Sign-off</span></div>
+  </nav>
+
+  <!-- ============================== MAIN ================================== -->
+  <main class="main" id="main">
+
+  <div class="vsummary" id="vsummary"></div>
+
+  <!-- ===================== 1. PATIENT & VISIT DETAILS ==================== -->
+  <section class="section" id="sec-1">
+    <div class="sec-head"><h2>1. Patient &amp; Visit Details</h2><span class="sec-tag">Draft — no image supplied</span></div>
+    <div class="card">
+      <div class="callout draft"><b>Section drafted by us.</b> You supplied images for sections 2, 3, 4, 5, 10, 11 and 12. Sections 1 and 6–9 were referenced by your numbering but no image was provided, so we have drafted a reasoned version. Send us the originals and we will replace these.</div>
+
+      <details class="change-note" open>
+        <summary>Why this section is mostly read-only</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Patient identity, visit and vitals are <b>not re-typed here</b>. They are pulled from Registration, the Visit record and Vital Signs and shown as read-only cards with a badge saying where each value came from.</p>
+          <p><span class="cn-k">Why</span> — When the same field is typed in two departments, the two copies disagree within weeks and nobody knows which is correct. One owner per field is the only way to keep a multi-department record trustworthy.</p>
+          <p><span class="cn-k">Effect for the therapist</span> — Fewer fields to fill, and the demographic data on the physio record always matches the front desk.</p>
+        </div>
+      </details>
+
+      <div class="sub">Inherited from Registration &amp; Visit</div>
+      <div class="grid3" id="inheritedPatient"></div>
+
+      <div class="sub">Recorded by the rehabilitation department</div>
+      <div class="grid3">
+        <div class="field">
+          <label class="req">Assessment type</label>
+          <select data-field="assessType" data-required="1">
+            <option value="">Select…</option>
+            <option>Initial assessment</option><option>Re-assessment</option>
+            <option>Pre-discharge assessment</option><option>Annual review</option>
+          </select>
+          <span class="err-msg">Required</span>
+        </div>
+        <div class="field">
+          <label class="req">Assessing therapist</label>
+          <select data-field="therapist" data-required="1">
+            <option value="">Select…</option>
+            <option selected>Ms. Fatima Nadeem (PT-PK-40219)</option>
+            <option>Mr. Bilal Haider (PT-PK-38804)</option>
+            <option>Ms. Ayesha Tariq (PT-PK-41550)</option>
+          </select>
+          <span class="err-msg">Required</span>
+        </div>
+        <div class="field">
+          <label>Supervising consultant</label>
+          <input type="text" data-field="supervisor" value="Dr. Ahmed Raza">
+        </div>
+        <div class="field">
+          <label class="req">Assessment date</label>
+          <input type="date" data-field="assessDate" value="2026-08-18" data-required="1">
+          <span class="err-msg">Required</span>
+        </div>
+        <div class="field"><label>Start time</label><input type="time" data-field="startTime" value="11:15"></div>
+        <div class="field"><label>Setting</label>
+          <select data-field="setting"><option>Outpatient gym</option><option>Bedside / ward</option><option>Home visit</option><option>Tele-rehabilitation</option></select>
+        </div>
+        <div class="field span2">
+          <label>Accompanied by <span class="hint">(who gave the history)</span></label>
+          <input type="text" data-field="informant" value="Mother">
+        </div>
+        <div class="field">
+          <label>Interpreter required</label>
+          <select data-field="interpreter"><option>No</option><option>Yes — Urdu</option><option>Yes — Punjabi</option><option>Yes — Pashto</option></select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== 2. DIAGNOSIS & MEDICAL HISTORY ================== -->
+  <section class="section" id="sec-2">
+    <div class="sec-head"><h2>2. Diagnosis &amp; Medical History</h2><span class="sec-tag">From your image 1</span></div>
+    <div class="card">
+
+      <details class="change-note" open>
+        <summary>"will be in OPD" / "will be in rehab" — how we handled it</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Your form annotated some rows "will be in OPD" and others "will be in rehab". We have made that split <b>visible on screen</b>. Fields owned by OPD appear as read-only cards with a source badge (<i>From OPD — Dr. Ahmed Raza, 18-Aug-2026</i>) and a <b>Request amendment</b> link. Fields owned by rehab are normal inputs.</p>
+          <p><span class="cn-k">Why</span> — A therapist silently editing the doctor's diagnosis creates a clinical and legal problem: the record no longer shows who decided what. An amendment request keeps the audit trail intact.</p>
+        </div>
+      </details>
+
+      <div class="sub">Inherited from the OPD consultation</div>
+      <div style="display:grid;gap:12px" id="inheritedOpd"></div>
+
+      <div class="sub">Recorded by rehabilitation</div>
+      <div class="field" style="margin-bottom:16px">
+        <label>Secondary diagnoses <span class="hint">— coded, so they can be reported on later</span></label>
+        <div class="chipset" id="secondaryDx"></div>
+      </div>
+
+      <div class="field" style="margin-bottom:6px"><label>Surgical history</label></div>
+      <div id="surgeries"></div>
+
+      <details class="change-note">
+        <summary>Allergies now write to the patient record, not to this form</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Allergies were a free-text box on your form. They are now <b>severity-coded entries on the patient's permanent record</b>, displayed here and editable here, but stored once at patient level.</p>
+          <p><span class="cn-k">Why</span> — An allergy typed into a physiotherapy form is invisible to OPD, to the ward and to pharmacy. That is a patient-safety gap, and it is the kind of finding that fails an accreditation review. Recording it once means every department sees it.</p>
+        </div>
+      </details>
+
+      <div class="field" style="margin:16px 0">
+        <label>Allergies <span class="hint">— patient-level record, shared with OPD, ward and pharmacy</span></label>
+        <div class="chipset" id="allergies"></div>
+      </div>
+
+      <details class="change-note">
+        <summary>Precautions now follow the therapist through the whole form</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Precautions were one checkbox row at the bottom of section 2. Now, whatever you tick here appears as a <b>red banner pinned under the patient name on every section</b> and on the printed record. "Bone fragility" and "Orthopaedic" additionally require a short note.</p>
+          <p><span class="cn-k">Why</span> — A therapist mobilising a child with fragile bones or a VP shunt should not have to remember a checkbox they ticked eight screens ago. Tick one below and watch the banner appear at the top of the page.</p>
+        </div>
+      </details>
+
+      <div class="field" style="margin-top:14px">
+        <label class="req">Precautions / contraindications</label>
+        <div id="precautions"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= 3. BIRTH & DEVELOPMENTAL HISTORY ==================== -->
+  <section class="section" id="sec-3">
+    <div class="sec-head"><h2>3. Birth &amp; Developmental History</h2><span class="sec-tag">From your image 2</span></div>
+    <div class="card">
+      <div class="callout"><b>Captured once, carried forward.</b> Birth and developmental history does not change between visits. On a re-assessment this section loads read-only with an <b>Amend</b> action, so the therapist never re-types it.</div>
+
+      <div class="sub">Birth history</div>
+      <div class="grid4">
+        <div class="field"><label>Gestational age — weeks</label><div id="gaWeeks"></div></div>
+        <div class="field"><label>&nbsp;days</label><div id="gaDays"></div></div>
+        <div class="field"><label>Birth weight</label><div id="birthWeight"></div></div>
+        <div class="field"><label>Head circumference at birth</label><div id="birthHc"></div></div>
+      </div>
+
+      <details class="change-note">
+        <summary>Gestational age split into weeks + days</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — One free-text box became two numeric fields.</p>
+          <p><span class="cn-k">Why</span> — Prematurity is graded in weeks <i>and</i> days (32+4 is not 32+0), and corrected age for a preterm child is calculated from it. Free text cannot be calculated with. The prototype uses this to compute corrected age automatically.</p>
+        </div>
+      </details>
+
+      <div class="field" style="margin-top:14px"><label>Delivery mode <span class="hint">— single choice, correctly a radio on your form</span></label>
+        <div class="radios" id="deliveryMode"></div>
+      </div>
+
+      <div class="field" style="margin-top:16px"><label>Birth complications</label><div id="birthComplications"></div></div>
+
+      <div class="grid2" id="nicu-detail" style="display:none;margin-top:14px;padding:12px;background:#f7fafb;border:1px solid var(--line);border-radius:8px">
+        <div class="field"><label class="req">NICU duration</label><div id="nicuDays"></div><span class="err-msg">Required when NICU admission is ticked</span></div>
+        <div class="field"><label>Ventilation duration</label><div id="ventDays"></div></div>
+      </div>
+
+      <details class="change-note">
+        <summary>NICU and ventilation duration only appear when they apply</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — These two fields are hidden until "NICU admission" is ticked, and then they become required.</p>
+          <p><span class="cn-k">Why</span> — On the original form they sit in the middle of the page for every child, including full-term babies who went straight home. Conditional display removes noise and, once revealed, makes sure the field is actually completed. Try ticking <b>NICU admission</b> above.</p>
+        </div>
+      </details>
+
+      <div class="sub">Developmental milestones</div>
+
+      <details class="change-note" open>
+        <summary>Milestones now interpret themselves</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Each milestone is a number in months, plus a <b>"Not achieved yet"</b> option, plus an automatic flag comparing the entry against normal ranges: <b>Within range</b> / <b>Mild delay</b> / <b>Significant delay</b>.</p>
+          <p><span class="cn-k">Why</span> — Two reasons. First, a child with cerebral palsy who has never walked cannot be given a number, so the original form has no valid answer for the most important cases. Second, "walking 35 months" only means something to a reader who knows that typical is 12 — the form should say so, not rely on memory. Type a value below and watch the flag.</p>
+        </div>
+      </details>
+
+      <div class="grid4" id="milestones"></div>
+
+      <div class="grid2" style="margin-top:18px">
+        <div class="field"><label>Current school / grade</label><input type="text" data-field="school" placeholder="e.g. Special education unit, Grade 1"></div>
+        <div class="field"><label>Therapies currently received</label><input type="text" data-field="otherTherapy" placeholder="e.g. Speech therapy twice weekly"></div>
+        <div class="field span2"><label>Developmental concerns raised by the family</label><textarea data-field="devConcerns" placeholder="In the family's own words…"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. PRESENTING COMPLAINT & GOALS ================= -->
+  <section class="section" id="sec-4">
+    <div class="sec-head"><h2>4. Presenting Complaint &amp; Goals</h2><span class="sec-tag">From your image 3</span></div>
+    <div class="card">
+
+      <details class="change-note" open>
+        <summary>Complaints and factors are pick-then-type, not type-only</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Chief complaint, aggravating factors and relieving factors keep their free-text box, but now sit under a row of common options the therapist can tap.</p>
+          <p><span class="cn-k">Why</span> — Free text alone means "delayed milestones", "delay in milestone", "DMD?" and "milestone delay" all end up in the database as different things, and you can never report on your own caseload. Tapping a standard option takes one second and makes the data countable; the free-text box is still there for everything that does not fit.</p>
+        </div>
+      </details>
+
+      <div class="field"><label class="req">Chief complaint</label>
+        <div id="complaintPills" style="margin-bottom:8px"></div>
+        <textarea data-field="chiefComplaint" data-required="1" placeholder="In the parent's own words, plus anything the options above do not cover…"></textarea>
+        <span class="err-msg">Required</span>
+      </div>
+
+      <div class="grid3" style="margin-top:16px">
+        <div class="field"><label>Onset type</label>
+          <select data-field="onsetType"><option value="">Select…</option><option>Since birth</option><option>Gradual</option><option>Sudden</option><option>Post-operative</option><option>Post-injury</option></select>
+        </div>
+        <div class="field"><label>Onset date <span class="hint">(or approximate)</span></label><input type="date" data-field="onsetDate"></div>
+        <div class="field"><label>Duration</label><input type="text" data-field="duration" placeholder="calculated" readonly style="background:#f7fafb"></div>
+      </div>
+
+      <div class="field" style="margin-top:16px"><label>Aggravating factors</label>
+        <div id="aggravatingPills" style="margin-bottom:8px"></div>
+        <input type="text" data-field="aggravatingOther" placeholder="Anything else…">
+      </div>
+      <div class="field" style="margin-top:16px"><label>Relieving factors</label>
+        <div id="relievingPills" style="margin-bottom:8px"></div>
+        <input type="text" data-field="relievingOther" placeholder="Anything else…">
+      </div>
+
+      <details class="change-note">
+        <summary>Goals are now separate, prioritised rows</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — "Parent / Child Goals" was one large text box. It is now a list where each goal is its own row with a priority.</p>
+          <p><span class="cn-k">Why</span> — Goals are what you review at discharge and what you report progress against. If three goals are buried in one paragraph you cannot mark one achieved. Separate rows now become measurable goals in the treatment plan later — no re-typing.</p>
+        </div>
+      </details>
+
+      <div class="field" style="margin-top:14px"><label class="req">Parent / child goals</label></div>
+      <div id="goals"></div>
+      <span class="err-msg" id="goalsErr" style="display:none">At least one goal is required</span>
+
+      <div class="sub">Previous physiotherapy</div>
+      <div class="grid4">
+        <div class="field"><label>Received previously?</label>
+          <select data-field="prevPhysio" id="prevPhysio"><option value="">Select…</option><option value="no">No</option><option value="yes">Yes</option></select>
+        </div>
+        <div class="field prev-physio" style="display:none"><label>Where</label><input type="text" data-field="prevWhere"></div>
+        <div class="field prev-physio" style="display:none"><label>Approx. sessions</label><input type="number" data-field="prevSessions" min="0"></div>
+        <div class="field prev-physio" style="display:none"><label>Outcome</label>
+          <select data-field="prevOutcome"><option value="">Select…</option><option>Improved</option><option>No change</option><option>Deteriorated</option><option>Discontinued</option></select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= 5. SYSTEMS REVIEW ======================= -->
+  <section class="section" id="sec-5">
+    <div class="sec-head"><h2>5. Systems Review</h2><span class="sec-tag">From your image 4</span></div>
+    <div class="card">
+
+      <details class="change-note" open>
+        <summary>"Radio Selection" changed to multi-select — this one matters</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Your form marks the Respiratory row as a radio button, meaning only one option can be chosen. We have made it multi-select, with <b>Clear</b> behaving as an exclusive option: tick Clear and everything else clears; tick any finding and Clear clears itself. The same rule now applies to Skin (<b>Intact</b>), Vision/Hearing (<b>Normal</b>) and Birth Complications (<b>Nil</b>).</p>
+          <p><span class="cn-k">Why</span> — A child can have a tracheostomy <i>and</i> secretions <i>and</i> be on oxygen at the same time. A radio button forces the therapist to record only one of the three, and the two they drop are usually the two that matter. Try it below — tick two findings, then tick "Clear".</p>
+        </div>
+      </details>
+
+      <div class="field"><label>Respiratory</label><div id="respiratory"></div></div>
+
+      <details class="change-note">
+        <summary>Neurological split into two questions</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Your single Neurological row mixed <b>Alert / GCS impaired</b> (level of consciousness) with <b>Hypotonia / Hypertonia / Spasticity / Ataxia</b> (motor findings). We have separated them into two questions.</p>
+          <p><span class="cn-k">Why</span> — They are different clinical axes and a child has an answer to both at once. Mixing them in one list means the therapist must choose between recording that the child is alert and recording that the child is spastic.</p>
+        </div>
+      </details>
+
+      <div class="grid2" style="margin-top:14px">
+        <div class="field"><label>Level of consciousness <span class="hint">(single choice)</span></label><div id="consciousness"></div></div>
+        <div class="field"><label>Neurological findings <span class="hint">(screening — detail in section 10)</span></label><div id="neuroFindings"></div></div>
+      </div>
+
+      <div class="field" style="margin-top:16px"><label>Skin integrity</label><div id="skin"></div></div>
+      <div class="field" style="margin-top:16px"><label>Feeding</label><div id="feeding"></div></div>
+      <div class="field" style="margin-top:16px"><label>Vision / hearing</label><div id="visionHearing"></div></div>
+      <div class="field" style="margin-top:16px"><label>Other findings</label><textarea data-field="systemsOther"></textarea></div>
+    </div>
+  </section>
+
+  <!-- ==================== 6-9 DRAFT SECTIONS ========================== -->
+  <section class="section" id="sec-6">
+    <div class="sec-head"><h2>6. Pain Assessment</h2><span class="sec-tag">Draft — no image supplied</span></div>
+    <div class="card">
+      <div class="callout draft"><b>Drafted by us — please confirm or replace.</b> No image was supplied for section 6.</div>
+      <details class="change-note" open>
+        <summary>The pain scale is chosen by the child's age, automatically</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What we propose</span> — The form reads the child's age from the date of birth and offers the correct instrument: <b>FLACC</b> (observational) under 3 years, <b>Wong-Baker FACES</b> for 3–7, <b>Numeric 0–10</b> from 8 upwards.</p>
+          <p><span class="cn-k">Why</span> — Asking a two-year-old to rate pain out of ten produces a meaningless number. Using the wrong instrument makes the score unusable and unauditable. The current demo patient is <b id="ageEcho">—</b>, so the form has selected <b id="scaleEcho">—</b>.</p>
+        </div>
+      </details>
+      <div class="grid3">
+        <div class="field"><label>Pain present</label><select data-field="painPresent" id="painPresent"><option value="no">No</option><option value="yes">Yes</option></select></div>
+        <div class="field pain-detail" style="display:none"><label>Instrument</label><input type="text" id="painInstrument" readonly style="background:#f7fafb"></div>
+        <div class="field pain-detail" style="display:none"><label>Score</label><div id="painScore"></div></div>
+        <div class="field pain-detail span2" style="display:none"><label>Site(s)</label><input type="text" data-field="painSite" placeholder="e.g. bilateral hamstrings, left hip"></div>
+        <div class="field pain-detail" style="display:none"><label>Timing</label><select data-field="painTiming"><option value="">Select…</option><option>At rest</option><option>On movement</option><option>Night pain</option><option>Constant</option></select></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sec-7">
+    <div class="sec-head"><h2>7. Anthropometry &amp; Observation</h2><span class="sec-tag">Draft — no image supplied</span></div>
+    <div class="card">
+      <div class="callout draft"><b>Drafted by us — please confirm or replace.</b></div>
+      <div class="callout"><b>Weight, height and head circumference come from Vital Signs</b> and are shown read-only. Only measurements a physiotherapist takes — limb length, girth, leg-length discrepancy — are entered here.</div>
+      <div class="grid4" id="anthro"></div>
+      <div class="sub">Observation</div>
+      <div class="grid2">
+        <div class="field"><label>Orthoses / assistive devices in use</label><input type="text" data-field="orthoses" placeholder="e.g. bilateral AFOs, posterior walker"></div>
+        <div class="field"><label>Device condition / fit</label><select data-field="deviceFit"><option value="">Select…</option><option>Appropriate</option><option>Needs adjustment</option><option>Outgrown — review required</option><option>Not used at home</option></select></div>
+        <div class="field span2"><label>General observation</label><textarea data-field="observation"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sec-8">
+    <div class="sec-head"><h2>8. Reflexes &amp; Reactions</h2><span class="sec-tag">Draft — no image supplied</span></div>
+    <div class="card">
+      <div class="callout draft"><b>Drafted by us — please confirm or replace.</b> Primitive reflexes and postural reactions are standard in a paediatric neuro assessment and are missing from the numbering you supplied.</div>
+      <div class="sub">Primitive reflexes</div>
+      <div id="primitiveReflexes"></div>
+      <div class="sub">Postural reactions</div>
+      <div id="posturalReactions"></div>
+    </div>
+  </section>
+
+  <section class="section" id="sec-9">
+    <div class="sec-head"><h2>9. Sensory Assessment</h2><span class="sec-tag">Draft — no image supplied</span></div>
+    <div class="card">
+      <div class="callout draft"><b>Drafted by us — please confirm or replace.</b></div>
+      <div class="grid2" id="sensory"></div>
+      <div class="field" style="margin-top:14px"><label>Sensory processing observations</label><textarea data-field="sensoryNotes" placeholder="Tactile defensiveness, vestibular seeking, response to textures…"></textarea></div>
+    </div>
+  </section>
+
+  <!-- ================== 10. POSTURE & MUSCLE TONE ===================== -->
+  <section class="section" id="sec-10">
+    <div class="sec-head"><h2>10. Posture &amp; Muscle Tone</h2><span class="sec-tag">From your image 5 — table rebuilt</span></div>
+    <div class="card">
+
+      <details class="change-note" open>
+        <summary>The Ashworth table has been rebuilt — please read this one</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What we found</span> — On your form the table header reads <b>Body Region | Left MAS Grade | Right MAS Grade | Notes</b>, but the rows pair <b>two different muscles</b>: "Elbow Flexors" in column 1 and "Elbow Extensors" in column 3. So the column labelled "Right MAS Grade" is not the right side of the body — it is the grade of a second, different muscle. As drawn, the table cannot record left-versus-right.</p>
+          <p><span class="cn-k">What changed</span> — Each muscle group is now one row, with a genuine <b>Left</b> and <b>Right</b> grade. You select which groups you want from a catalogue, exactly as in sections 11 and 12.</p>
+          <p><span class="cn-k">Why</span> — In cerebral palsy and hemiplegia the difference between the two sides <i>is</i> the finding. A form that cannot express it cannot support the treatment decision or show progress.</p>
+        </div>
+      </details>
+
+      <div id="masRef"></div>
+      <div id="grid-tone"></div>
+
+      <div class="sub">General tone assessment</div>
+      <div class="callout warn" id="toneConflict" style="display:none"></div>
+      <div class="field"><label class="req">Overall tone</label><div id="overallTone"></div></div>
+      <div class="field" style="margin-top:16px"><label>Posture in lying</label><div id="postureLying"></div></div>
+      <div class="field" style="margin-top:16px"><label>Posture in sitting</label><div id="postureSitting"></div></div>
+      <div class="field" style="margin-top:16px"><label>Postural observations</label><textarea data-field="posturalObs"></textarea></div>
+
+      <details class="change-note">
+        <summary>Overall tone pre-fills from your section 5 answer</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Muscle tone was being asked twice: once in section 5 (Neurological) and again here. Section 5 is now a quick screen; this section is the source of truth and pre-fills from it. If you record something here that contradicts the screen, an amber note appears.</p>
+          <p><span class="cn-k">Why</span> — Two independent answers to the same clinical question will eventually disagree, and then neither can be trusted. One question, asked once, answered in detail.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===================== 11. RANGE OF MOTION ======================== -->
+  <section class="section" id="sec-11">
+    <div class="sec-head"><h2>11. Range of Motion</h2><span class="sec-tag">From your image 6</span></div>
+    <div class="card">
+
+      <details class="change-note" open>
+        <summary>ROM is recorded in degrees, not as a score out of 4 — decision needed</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What we found</span> — Your form records range of motion as <b>1/4</b>, i.e. a score out of four. Range of motion is an angular measurement taken with a goniometer; there is no recognised 0–4 range-of-motion scale.</p>
+          <p><span class="cn-k">Why it matters</span> — A child whose hip abduction improves from 20° to 45° has made real, reportable progress, but on a 0–4 scale they stay at "2/4" and the improvement is invisible. You also lose comparison against normal ranges and the ability to produce outcome reports for referrers or funders.</p>
+          <p><span class="cn-k">What we built</span> — Both. The prototype ships in degrees, with the normal range printed under each motion and out-of-range values highlighted. Your original 0–4 scale is a <b>one-line switch</b> in the configuration file (<code>romMode: 'graded'</code>) if you decide to keep it. <b>We need your decision on this before implementation.</b></p>
+        </div>
+      </details>
+
+      <details class="change-note">
+        <summary>"Shoulder Flex/Ext" split into separate motions</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Rows that combined two opposite motions (Shoulder Flex/Ext, Hip Flex/Ext, Ankle DF/PF) are now separate rows.</p>
+          <p><span class="cn-k">Why</span> — Flexion and extension have completely different normal ranges, and a child commonly has full flexion with a severe extension limitation. One value for both hides exactly the finding you are looking for. The list is longer, but because you choose what to load, you never see a motion you did not test.</p>
+        </div>
+      </details>
+
+      <details class="change-note" open>
+        <summary>Every measurement can be marked "Not Tested" with a reason</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — You asked that all fields be required. We have kept that, but added an <b>NT</b> button on every measurement cell. A cell is complete when it holds either a value <i>or</i> Not-Tested plus a reason. Blank is still an error.</p>
+          <p><span class="cn-k">Why</span> — Some measurements genuinely cannot be taken: the child would not cooperate, a contracture blocks the movement, the limb is in a cast, the side is unaffected. If the form refuses to accept that, therapists type a "1" to get past validation — and then your data says the child has severe restriction when they were simply not tested. An explicit "not tested, because…" is honest data; a forced number is not.</p>
+        </div>
+      </details>
+
+      <div id="romRef"></div>
+      <div id="grid-rom"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 12. MUSCLE STRENGTH ======================== -->
+  <section class="section" id="sec-12">
+    <div class="sec-head"><h2>12. Muscle Strength — MRC / Kendall</h2><span class="sec-tag">From your image 7</span></div>
+    <div class="card">
+
+      <details class="change-note" open>
+        <summary>Same select-then-fill pattern as sections 10 and 11</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Instead of a fixed 13-row table where most rows are left blank, you select the muscle groups you tested and only those rows load. The interaction is identical to sections 10 and 11, so there is nothing new to learn.</p>
+          <p><span class="cn-k">Why</span> — A fixed table trains people to leave blanks, and a blank is ambiguous: was it normal, or was it never tested? Loading only what you tested makes every visible row meaningful.</p>
+          <p><span class="cn-k">Also</span> — The <b>Method</b> column has been dropped, as marked "skip" on your image. Grades are entered from a dropdown of valid MRC values rather than typed, so "4-", "4" and "4+" are recorded consistently.</p>
+        </div>
+      </details>
+
+      <div id="mrcRef"></div>
+      <div id="grid-strength"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 13+ PLACEHOLDERS =========================== -->
+  <section class="section" id="sec-13">
+    <div class="sec-head"><h2>Coming next</h2><span class="sec-tag">Placeholders — awaiting your requirements</span></div>
+    <div class="card">
+      <div class="callout"><b>These sections are deliberately not built yet.</b> They continue the assessment after section 12. Send the requirements or screenshots and we will build them into the same shell — the navigation, patient header, precaution banner, validation and print output already accommodate them.</div>
+      <div class="ph-grid">
+        <div class="ph-card"><h5><span class="n">13</span> Balance &amp; Coordination</h5><p>Sitting / standing balance grades, Berg or Paediatric Balance Scale, coordination tests.</p></div>
+        <div class="ph-card"><h5><span class="n">14</span> Gait Analysis</h5><p>Observational gait, deviations by phase, aids used, distance and endurance.</p></div>
+        <div class="ph-card"><h5><span class="n">15</span> Functional Mobility</h5><p>Transfers, bed mobility, stairs, level of assistance, wheelchair skills.</p></div>
+        <div class="ph-card"><h5><span class="n">16</span> Standardised Outcome Measures</h5><p>GMFM-66/88, GMFCS, MACS, PEDI, 6MWT. Each is a scored instrument — please confirm which are in scope.</p></div>
+        <div class="ph-card"><h5><span class="n">17</span> Assessment Summary</h5><p>Clinical impression, problem list, prognosis.</p></div>
+        <div class="ph-card"><h5><span class="n">18</span> Goals (SMART)</h5><p>Short and long-term goals carried forward from section 4, with target dates.</p></div>
+        <div class="ph-card"><h5><span class="n">19</span> Treatment Plan</h5><p>Interventions, frequency, duration, review date.</p></div>
+        <div class="ph-card"><h5><span class="n">20</span> Home Programme</h5><p>Parent-facing exercise sheet — confirm whether Urdu printing is required.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REVIEW & SIGN-OFF ========================== -->
+  <section class="section" id="sec-99">
+    <div class="sec-head"><h2>Review &amp; Sign-off</h2><span class="sec-tag">Governance</span></div>
+    <div class="card">
+      <details class="change-note" open>
+        <summary>Sign-off, and what happens after it</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What we added</span> — An assessment moves from <b>Draft</b> to <b>Signed</b>. Once signed it becomes read-only; later corrections are recorded as dated addenda rather than silent edits.</p>
+          <p><span class="cn-k">Why</span> — A clinical record has to answer "who recorded this, when, and has it been changed since". Editable-forever forms cannot answer that, and it is the first thing an auditor or a lawyer asks.</p>
+        </div>
+      </details>
+      <div class="grid3" style="margin-top:14px">
+        <div class="field"><label>Assessed by</label><input type="text" value="Ms. Fatima Nadeem" readonly style="background:#f7fafb"></div>
+        <div class="field"><label>Licence no.</label><input type="text" value="PT-PK-40219" readonly style="background:#f7fafb"></div>
+        <div class="field"><label>Date &amp; time</label><input type="text" value="18-Aug-2026 11:15" readonly style="background:#f7fafb"></div>
+      </div>
+      <div class="field" style="margin-top:16px"><label>Clinical impression / summary</label><textarea data-field="impression" style="min-height:110px"></textarea></div>
+      <div style="margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn primary" id="btnComplete">✓ Complete assessment</button>
+        <button class="btn" onclick="window.print()">🖨 Print / preview record</button>
+        <span class="hint">Completing runs validation across all sections and lists anything outstanding.</span>
+      </div>
+      <div class="signblock print-only">
+        <div class="sig">Therapist signature &amp; stamp</div>
+        <div class="sig">Parent / guardian signature</div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<div class="actionbar">
+  <div class="save-state"><span class="dot"></span><span id="saveMsg">Draft saved automatically</span></div>
+  <div class="progress-mini"><span id="progTxt">0 of 12 sections started</span><span class="bar"><i id="progBar"></i></span></div>
+  <span class="spacer"></span>
+  <button class="btn" id="btnPrev">‹ Back</button>
+  <button class="btn" id="btnNext">Next ›</button>
+  <button class="btn primary" id="btnComplete2">✓ Complete assessment</button>
+</div>
+
+<div class="print-foot print-only"><span>Rehabilitation Assessment — Ayaan Khan, MRN-2026-04871</span><span>Prototype — demonstration data only</span></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/demo-data.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
