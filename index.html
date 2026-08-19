@@ -8,80 +8,84 @@
 </head>
 <body>
 <div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b>, no live patient records</div>
-<div class="appbar">
-  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
-  <span class="crumb">Patient journey</span>
-  <span class="spacer"></span>
-  <a class="btn sm" href="change-notes.html">📋 What we changed &amp; why</a>
-</div>
 
-<div class="jwrap">
-  <h1 style="font-size:24px;margin-bottom:6px">Patient journey — Registration to Rehabilitation</h1>
-  <p style="color:var(--muted);max-width:760px;margin:0 0 4px">
-    This prototype demonstrates the flow you described. The first four steps are shown as
-    read-only summaries so you can see <b>which data flows forward</b>; step 5, the
-    Rehabilitation Assessment, is fully interactive and is the subject of this review.
-  </p>
+<div class="page"><div class="wrap">
+  <div class="pagebar">
+    <h1>Patient journey — Registration to Rehabilitation</h1>
+    <span class="spacer"></span>
+    <a class="btn sm" href="change-notes.html">&#128203; What we changed &amp; why</a>
+    <a class="btn sm primary" href="assessment.html">Open the assessment &rarr;</a>
+  </div>
 
   <div class="jsteps">
     <a class="jstep done" href="journey/registration.html"><span class="tag">Mocked</span><div class="n">1</div><div class="t">Registration &amp; Visit</div><div class="d">Patient identity, guardian, visit record</div></a>
-    <a class="jstep done" href="journey/vitals.html"><span class="tag">Mocked</span><div class="n">2</div><div class="t">Vital Signs</div><div class="d">HR, RR, temp, SpO₂, weight, height</div></a>
-    <a class="jstep done" href="journey/opd.html"><span class="tag">Mocked</span><div class="n">3</div><div class="t">OPD Consultation</div><div class="d">Diagnosis &amp; medical history — flows into rehab</div></a>
+    <a class="jstep done" href="journey/vitals.html"><span class="tag">Mocked</span><div class="n">2</div><div class="t">Vital Signs</div><div class="d">HR, RR, temp, SpO&#8322;, weight, height</div></a>
+    <a class="jstep done" href="journey/opd.html"><span class="tag">Mocked</span><div class="n">3</div><div class="t">OPD Consultation</div><div class="d">Diagnosis &amp; history — flows into rehab</div></a>
     <a class="jstep done" href="journey/referral.html"><span class="tag">Mocked</span><div class="n">4</div><div class="t">Departmental Referral</div><div class="d">Referred to Rehabilitation</div></a>
-    <a class="jstep current" href="assessment.html"><span class="tag">Live</span><div class="n">5</div><div class="t">Rehab Assessment</div><div class="d">Sections 1–12 built, 13+ placeholders</div></a>
+    <a class="jstep current" href="assessment.html"><span class="tag">Live</span><div class="n">5</div><div class="t">Rehab Assessment</div><div class="d">Sections 1&ndash;12 built, 13+ placeholders</div></a>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start" class="grid-resp">
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start" class="grid-resp">
     <div>
-      <div class="sec-head"><h2>What is in this prototype</h2></div>
-      <div class="card">
-        <p style="margin-top:0">Sections <b>2, 3, 4, 5, 10, 11 and 12</b> are built from the images you supplied.
-        Sections <b>1 and 6–9</b> were referenced by your numbering but no image was provided, so we have drafted
-        reasoned versions marked <b>DRAFT</b> — please confirm or replace them.
-        Everything from section 13 onward is a labelled placeholder.</p>
-
-        <p><b>We changed a number of things.</b> Each change is explained on the screen where it appears,
-        in a purple <b>CHANGE</b> panel you can expand or hide with the "Show change notes" switch at the
-        top of the assessment. A consolidated list is on the
-        <a href="change-notes.html">What we changed &amp; why</a> page.</p>
-
-        <div class="callout warn"><b>One decision is needed from you before implementation:</b> range of motion is
-        currently recorded as a score out of 4 on your form. We have built it in degrees, with your 0–4 scale
-        available as a configuration switch. See section 11, or the change notes page.</div>
-
-        <p style="margin-bottom:0"><a class="btn primary" href="assessment.html">Open the Rehabilitation Assessment →</a></p>
-      </div>
+      <section class="card">
+        <div class="ch"><h2>What is in this prototype</h2></div>
+        <div class="cb">
+          <p style="margin-top:0">Sections <b>2, 3, 4, 5, 10, 11 and 12</b> are built from the images you supplied.
+          Sections <b>1 and 6&ndash;9</b> were referenced by your numbering but no image was provided, so we have drafted
+          reasoned versions marked <b>DRAFT</b> — please confirm or replace them. Everything from section 13 onward
+          is a labelled placeholder.</p>
+          <p>The assessment is <b>one scrolling page</b>, matching your existing OPD layout — every card is open,
+          there are no Back / Next buttons, and <b>Toggle Sections</b> at the top right hides any card you do not use
+          or jumps you straight to one.</p>
+          <p><b>We changed a number of things.</b> Change notes are <b>hidden by default</b> — press <b>Show change notes</b> at the top of the
+          assessment and every change is explained in a purple <b>CHANGE</b> panel on the card it applies to. A consolidated list is on the
+          <a href="change-notes.html">What we changed &amp; why</a> page.</p>
+          <div class="callout warn"><b>One decision is needed before implementation:</b> range of motion is recorded as
+          a score out of 4 on your form. We have built it in degrees, with your 0&ndash;4 scale available as a
+          configuration switch. See section 11, or the change notes page.</div>
+          <a class="btn primary" href="assessment.html">Open the Rehabilitation Assessment &rarr;</a>
+        </div>
+      </section>
     </div>
 
     <div>
-      <div class="sec-head"><h2>Demo patient</h2></div>
-      <div class="card">
-        <div class="kv" style="border:none">
-          <div>Name</div><div>Ayaan Khan <span class="hint">(synthetic)</span></div>
-          <div>MRN</div><div>MRN-2026-04871</div>
-          <div>Age</div><div id="ageCell">—</div>
-          <div>Diagnosis</div><div>Spastic Diplegic CP (G80.1)</div>
-          <div>Referred by</div><div>Dr. Ahmed Raza, Paediatric OPD</div>
+      <section class="card">
+        <div class="ch"><h2>Demo patient</h2><span class="tag">Synthetic</span></div>
+        <div class="cb">
+          <div class="kv" style="border:none">
+            <div>Name</div><div>Ayaan Khan</div>
+            <div>MRN</div><div>MRN-2026-04871</div>
+            <div>Age</div><div id="ageCell">&mdash;</div>
+            <div>Diagnosis</div><div>Spastic Diplegic CP (G80.1)</div>
+            <div>Referred by</div><div>Dr. Ahmed Raza, Paediatric OPD</div>
+          </div>
         </div>
-        <div class="callout" style="margin-bottom:0"><b>Try these while reviewing:</b>
-          <ul style="margin:6px 0 0;padding-left:18px;font-size:12.5px">
-            <li>Section 2 — tick a precaution and watch the red banner follow you.</li>
+      </section>
+      <section class="card">
+        <div class="ch"><h2>Try these while reviewing</h2></div>
+        <div class="cb">
+          <ul style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.9">
+            <li>Section 2 — tick a precaution, watch the red banner follow you down the page.</li>
             <li>Section 3 — type <b>35</b> into a milestone.</li>
             <li>Section 5 — tick two respiratory findings, then tick "Clear".</li>
             <li>Section 11 — press the <b>CP baseline</b> preset.</li>
             <li>Any grid cell — press <b>NT</b>.</li>
+            <li>Top right — <b>Toggle Sections</b>.</li>
             <li>Press <b>Complete assessment</b> with gaps left.</li>
           </ul>
         </div>
-      </div>
+      </section>
     </div>
   </div>
-</div>
+</div></div>
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/demo-data.js"></script>
 <script src="assets/js/components.js"></script>
-<script>document.getElementById('ageCell').textContent = UI.ageFromDob(DEMO.patient.dob).label;</script>
-<style>@media(max-width:900px){.grid-resp{grid-template-columns:1fr!important}}</style>
+<script>
+  UI.shell({ active: 'REH' });
+  document.getElementById('ageCell').textContent = UI.ageFromDob(DEMO.patient.dob).label;
+</script>
+<style>@media(max-width:940px){.grid-resp{grid-template-columns:1fr!important}}</style>
 </body>
 </html>

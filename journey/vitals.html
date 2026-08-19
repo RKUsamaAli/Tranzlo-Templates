@@ -8,14 +8,17 @@
 </head>
 <body>
 <div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b></div>
-<div class="appbar">
-  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
   <span class="crumb">Step 2 of 5 · <b>Vital Signs</b></span>
   <span class="spacer"></span>
   <a class="btn sm" href="../index.html">Journey</a>
   <a class="btn sm primary" href="../assessment.html">Rehab Assessment →</a>
 </div>
-<div class="jwrap">
+<div class="page"><div class="wrap">
+  <div class="pagebar">
+    <span class="spacer"></span>
+    <a class="btn sm" href="../index.html">Journey</a>
+    <a class="btn sm primary" href="../assessment.html">Rehab Assessment &rarr;</a>
+  </div>
   <div class="jsteps">
     <a class="jstep done" href="registration.html"><div class="n">1</div><div class="t">Registration</div></a>
     <a class="jstep current" href="vitals.html"><div class="n">2</div><div class="t">Vital Signs</div></a>
@@ -23,8 +26,9 @@
     <a class="jstep" href="referral.html"><div class="n">4</div><div class="t">Referral</div></a>
     <a class="jstep" href="../assessment.html"><div class="n">5</div><div class="t">Rehab Assessment</div></a>
   </div>
-  <div class="sec-head"><h2>Vital Signs</h2><span class="sec-tag">Mocked — existing module</span></div>
-  <div class="card">
+  <section class="card">
+    <div class="ch"><h2>Vital Signs</h2><span class="tag">Mocked — existing module</span></div>
+    <div class="cb">
 
     <div class="callout">Recorded by nursing before the consultation. The rehabilitation assessment
     <b>displays these read-only</b> in the patient header and in section 7 — the therapist never re-measures or re-types them.</div>
@@ -39,7 +43,12 @@
       <div>Height / length</div><div>92.5 cm <span class="flows-to">→ Rehab section 7 (BMI calculated)</span></div>
       <div>Head circumference</div><div>47.2 cm <span class="flows-to">→ Rehab section 7</span></div>
     </div>
-  </div>
-</div>
+    </div>
+  </section>
+</div></div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/components.js"></script>
+<script>UI.shell({ active: 'OPD', home: '../index.html' });</script>
 </body>
 </html>

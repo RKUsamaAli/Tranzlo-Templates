@@ -3,6 +3,11 @@
 Static prototype for client sign-off. **No build step, no server, no dependencies** —
 open `index.html` in any browser.
 
+Styled to match the existing Tranzlo OPD screen: dark-green app bar, module icon
+rail, flat white cards. The assessment is **one scrolling page** — every card is
+open, there are no Back / Next buttons, and **Toggle Sections** (top right) hides
+any card you do not use or jumps straight to one.
+
 ```
 index.html                 Patient journey landing page — start here
 change-notes.html          "What we changed & why" — the client-facing explanation
@@ -29,8 +34,9 @@ docs/…plan.yaml            Staged build plan, full challenge list, open questi
 | 7 | Section 10 — press "CP baseline" | Select-then-fill grid, correct Left/Right columns |
 | 8 | Section 11 — press **NT** on any cell | Not-Tested with a reason |
 | 9 | Toggle "Compare with 12-Jul-2026" | Previous values beside each cell |
-| 10 | Press **Complete assessment** | Validation summary with clickable links |
-| 11 | Press **Print** | A4 record with only what was filled |
+| 10 | **Toggle Sections** — untick a card, then click one to jump | Single-page control, as on your OPD screen |
+| 11 | Press **Complete assessment** | Validation summary with clickable links |
+| 12 | Press **Print** | A4 record with only what was filled |
 
 Keep "Show change notes" on for the first walkthrough — every change we made is
 explained inline, on the screen where it applies.

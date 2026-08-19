@@ -8,14 +8,17 @@
 </head>
 <body>
 <div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b></div>
-<div class="appbar">
-  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
   <span class="crumb">Step 3 of 5 · <b>OPD Consultation</b></span>
   <span class="spacer"></span>
   <a class="btn sm" href="../index.html">Journey</a>
   <a class="btn sm primary" href="../assessment.html">Rehab Assessment →</a>
 </div>
-<div class="jwrap">
+<div class="page"><div class="wrap">
+  <div class="pagebar">
+    <span class="spacer"></span>
+    <a class="btn sm" href="../index.html">Journey</a>
+    <a class="btn sm primary" href="../assessment.html">Rehab Assessment &rarr;</a>
+  </div>
   <div class="jsteps">
     <a class="jstep done" href="registration.html"><div class="n">1</div><div class="t">Registration</div></a>
     <a class="jstep done" href="vitals.html"><div class="n">2</div><div class="t">Vital Signs</div></a>
@@ -23,8 +26,9 @@
     <a class="jstep" href="referral.html"><div class="n">4</div><div class="t">Referral</div></a>
     <a class="jstep" href="../assessment.html"><div class="n">5</div><div class="t">Rehab Assessment</div></a>
   </div>
-  <div class="sec-head"><h2>OPD Consultation</h2><span class="sec-tag">Mocked — existing module</span></div>
-  <div class="card">
+  <section class="card">
+    <div class="ch"><h2>OPD Consultation</h2><span class="tag">Mocked — existing module</span></div>
+    <div class="cb">
 
     <div class="callout"><b>This is the screen your form annotated &ldquo;will be in OPD&rdquo;.</b>
     The two highlighted fields below are owned here and appear in the rehabilitation assessment as read-only
@@ -42,7 +46,12 @@
     <div class="callout warn" style="margin-top:16px"><b>Why read-only downstream.</b> If a therapist can quietly edit the
     consultant&rsquo;s diagnosis, the record stops showing who decided what. In the rehabilitation form these fields carry a
     <b>Request amendment</b> action instead, which raises a dated addendum and leaves the original intact.</div>
-  </div>
-</div>
+    </div>
+  </section>
+</div></div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/demo-data.js"></script>
+<script src="../assets/js/components.js"></script>
+<script>UI.shell({ active: 'OPD', home: '../index.html' });</script>
 </body>
 </html>

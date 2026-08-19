@@ -9,7 +9,17 @@
   /* =======================================================================
      Patient header + precaution banner
      ======================================================================= */
-  UI.patientHeader('#patientBar');
+  UI.shell({ active: 'REH' });
+  UI.patientHeader('#patientBar', { actions: [
+    el('a',      { class: 'btn sm', href: 'journey/referral.html', html: '&#9776; Referral' }),
+    el('a',      { class: 'btn sm', href: 'change-notes.html',     html: '&#128203; What we changed' }),
+    el('span',   { class: 'spacer' }),
+    el('button', { class: 'btn sm purple', type: 'button', html: '&#9670; Refer onward',
+                   onclick: () => alert('Onward referral (e.g. to Orthopaedics or Speech Therapy) — not in scope for this round.') }),
+    el('button', { class: 'btn sm blue', type: 'button', html: '&#8635; History (1)',
+                   onclick: () => alert('Previous assessment: 12-Jul-2026.\n\nSwitch on "Compare with 12-Jul-2026" at the top of the page to see those values beside each measurement.') }),
+    el('button', { class: 'btn sm', type: 'button', html: '&#128424; Print', onclick: () => window.print() })
+  ]});
 
   /* =======================================================================
      Section 1 — inherited demographic cards
@@ -26,15 +36,9 @@
     ]);
   }
 
-  const p = DEMO.patient, v = DEMO.visit, vt = DEMO.vitals;
-  const invP = $('#inheritedPatient');
-  [['Registration', 'MRN', p.mrn], ['Registration', 'Patient name', p.name],
-   ['Registration', 'Date of birth / age', UI.fmtDate(p.dob) + '  (' + age.label + ')'],
-   ['Registration', 'Sex', p.sex], ['Registration', 'Guardian', p.guardian],
-   ['Registration', 'Contact', p.contact],
-   ['Visit', 'Visit no.', v.no], ['Visit', 'Visit date', UI.fmtDate(v.date) + ' ' + v.time],
-   ['Visit', 'Referred from', DEMO.referral.from + ' — ' + DEMO.referral.by]
-  ].forEach(r => invP.appendChild(inheritedCard(r[0], r[1], r[2])));
+  /* Patient identity, visit and vitals live in the patient header at the top of
+     the page — they are deliberately NOT repeated inside section 1. */
+  const p = DEMO.patient, vt = DEMO.vitals;
 
   /* =======================================================================
      Section 2 — inherited OPD fields, chipsets, precautions
@@ -299,25 +303,45 @@
   }
 
   /* =======================================================================
-     Navigation rail
+     Toggle Sections — show / hide any card, and jump to it.
+     Every section stays on one scrolling page; there is no Back / Next.
      ======================================================================= */
-  const order = ['1','2','3','4','5','6','7','8','9','10','11','12','13','99'];
-  let current = '1';
-  function show(sec) {
-    current = sec;
-    $$('.section').forEach(s => s.classList.remove('active'));
-    const target = $('#sec-' + sec);
-    if (target) target.classList.add('active');
-    $$('.rail-item').forEach(r => r.classList.toggle('active', r.dataset.sec === sec));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    const i = order.indexOf(sec);
-    $('#btnPrev').disabled = i <= 0;
-    $('#btnNext').disabled = i >= order.length - 1;
+  const SECTIONS = $$('section.card').map(c => ({
+    id: c.id, num: c.dataset.num, title: c.dataset.title, elm: c,
+    draft: /Draft/.test((c.querySelector('.ch .tag') || {}).textContent || '')
+  }));
+
+  const menu = $('#secMenu');
+  menu.appendChild(el('div', { class: 'mhead' }, [
+    el('span', { text: 'Sections on this page' }),
+    el('a', { text: 'Show all', onclick: () => setAll(true) }),
+    el('a', { text: 'Hide all', onclick: () => setAll(false) })
+  ]));
+  SECTIONS.forEach(sec => {
+    const row = el('div', {
+      class: 'sec-item' + (sec.draft ? ' is-draft' : '') + (sec.elm.dataset.hidden ? ' is-off' : ''),
+      'data-sec': sec.num
+    });
+    const cb = el('input', { type: 'checkbox' });
+    cb.checked = !sec.elm.dataset.hidden;      // cards marked data-hidden start collapsed
+    cb.addEventListener('change', () => sec.elm.classList.toggle('hidden', !cb.checked));
+    sec.cb = cb;
+    row.appendChild(cb);
+    row.appendChild(el('span', { class: 'jump', onclick: () => { cb.checked = true; sec.elm.classList.remove('hidden'); jump(sec.elm); } }, [
+      el('span', { class: 'n', text: sec.num }), el('span', { class: 't', text: sec.title })
+    ]));
+    menu.appendChild(row);
+  });
+  function setAll(on) { SECTIONS.forEach(s2 => { s2.cb.checked = on; s2.elm.classList.toggle('hidden', !on); }); }
+  function jump(target) {
+    const top = target.getBoundingClientRect().top + window.pageYOffset - 118;
+    if (window.scrollTo) window.scrollTo({ top: top, behavior: 'smooth' });
+    target.classList.add('flash');
+    setTimeout(() => target.classList.remove('flash'), 900);
   }
-  $$('.rail-item').forEach(r => r.addEventListener('click', () => show(r.dataset.sec)));
-  $('#btnPrev').addEventListener('click', () => show(order[Math.max(0, order.indexOf(current) - 1)]));
-  $('#btnNext').addEventListener('click', () => show(order[Math.min(order.length - 1, order.indexOf(current) + 1)]));
-  show('1');
+  const toggle = $('#secToggle');
+  $('#secToggleBtn').addEventListener('click', e => { e.stopPropagation(); toggle.classList.toggle('open'); });
+  document.addEventListener('click', e => { if (!toggle.contains(e.target)) toggle.classList.remove('open'); });
 
   /* =======================================================================
      Validation  (C04 / C12)
@@ -341,7 +365,9 @@
   function validate() {
     const issues = [];
     $$('[data-required]').forEach(f => {
-      const sec = f.closest('.section').id.replace('sec-', '');
+      const host = f.closest('section.card');
+      if (!host || host.classList.contains('hidden')) return;   // skip hidden cards
+      const sec = host.dataset.num;
       const ok = f.value && f.value.trim();
       f.classList.toggle('invalid', !ok);
       f.closest('.field').classList.toggle('has-error', !ok);
@@ -382,19 +408,18 @@
     issues.slice(0, 40).forEach(i => {
       const a = el('a', { text: 'Section ' + i.sec + ' — ' + i.msg });
       a.addEventListener('click', () => {
-        show(i.sec);
-        if (i.el) setTimeout(() => {
-          if (i.el.scrollIntoView) i.el.scrollIntoView({ block: 'center' });
-          if (i.el.focus) i.el.focus();
-        }, 260);
+        const sec = SECTIONS.find(x => x.num === i.sec);
+        if (sec) { sec.cb.checked = true; sec.elm.classList.remove('hidden'); }
+        if (i.el && i.el.scrollIntoView) i.el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        else if (sec) jump(sec.elm);
+        if (i.el && i.el.focus) setTimeout(() => i.el.focus(), 260);
       });
       ul.appendChild(el('li', {}, [ a ]));
     });
     if (issues.length > 40) ul.appendChild(el('li', { class: 'hint', text: '…and ' + (issues.length - 40) + ' more' }));
     box.appendChild(ul);
-    $$('.rail-item').forEach(r => r.classList.toggle('state-error', issues.some(i => i.sec === r.dataset.sec)));
-    show(current);
-    if (box.scrollIntoView) box.scrollIntoView({ block: 'center' });
+    $$('.sec-item').forEach(r => r.classList.toggle('state-error', issues.some(i => i.sec === r.dataset.sec)));
+    if (box.scrollIntoView) box.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
   $('#btnComplete').addEventListener('click', complete);
   $('#btnComplete2').addEventListener('click', complete);
@@ -416,7 +441,7 @@
   function refresh() {
     let started = 0;
     ['1','2','3','4','5','6','7','8','9','10','11','12'].forEach(sec => {
-      const item = $('.rail-item[data-sec="' + sec + '"]');
+      const item = $('.sec-item[data-sec="' + sec + '"]');
       if (!item) return;
       const n = sectionFilled(sec);
       item.classList.remove('state-complete', 'state-partial');
@@ -439,11 +464,24 @@
   /* =======================================================================
      Toolbar toggles
      ======================================================================= */
-  $('#toggleNotes').addEventListener('change', e => document.body.classList.toggle('hide-notes', !e.target.checked));
-  $('#toggleCompare').addEventListener('change', e => {
-    store.compare = e.target.checked;
+  /* Change notes are HIDDEN by default and revealed for the whole page at once. */
+  const btnNotes = $('#btnNotes');
+  $('#notesCount').textContent = $$('.change-note').length;
+  btnNotes.addEventListener('click', () => {
+    const showing = document.body.classList.toggle('hide-notes') === false;
+    btnNotes.classList.toggle('on', showing);
+    btnNotes.setAttribute('aria-pressed', showing);
+    btnNotes.innerHTML = (showing ? '\u25CF Hide change notes ' : '\u25CF Show change notes ') +
+      '<span class="cnt">' + $$('.change-note').length + '</span>';
+  });
+
+  const btnCompare = $('#btnCompare');
+  btnCompare.addEventListener('click', () => {
+    store.compare = !store.compare;
+    btnCompare.classList.toggle('on', store.compare);
+    btnCompare.setAttribute('aria-pressed', store.compare);
     Object.values(gridSpecs).forEach(g => g.render());
-    if (e.target.checked && !store.selected.rom.length)
+    if (store.compare && !store.selected.rom.length)
       alert('Comparison is on.\n\nLoad some rows (try the "CP baseline" preset in section 11) and previous values from ' +
             DEMO.previous.date + ' appear beside each cell.');
   });

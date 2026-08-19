@@ -610,33 +610,81 @@ window.UI = (function () {
   }
 
   /* ==========================================================================
-     COMPONENT 9 — patient header + precaution banner (C06)
+     COMPONENT 9 — application shell (module rail + app bar)
+     Mirrors the existing Tranzlo OPD chrome so the prototype reads as part of
+     the product rather than a separate mock-up.
+     ========================================================================== */
+  const MODULES = [
+    ['🏠', '', 'home'], ['⭐', '', 'fav'], ['🛡', 'IAM'], ['🏢', 'ORG'], ['🧾', 'FAS'],
+    ['📦', 'IMS'], ['🛒', 'PMS'], ['📊', 'SMS'], ['🧪', 'HRM'], ['🗂', 'AMS'],
+    ['💳', 'PAY'], ['💰', 'BMS'], ['🏥', 'OPD'], ['🔬', 'LAB'], ['📷', 'RAD'],
+    ['👥', 'PRMS'], ['🦿', 'REH']
+  ];
+  function shell(opts) {
+    opts = opts || {};
+    const side = el('nav', { class: 'side' });
+    MODULES.forEach(m => {
+      const a = el('a', { href: opts.home || 'index.html', title: m[1] || m[2], class: m[1] === opts.active ? 'on' : '' });
+      a.appendChild(el('span', { class: 'ico', text: m[0] }));
+      if (m[1]) a.appendChild(el('span', { text: m[1] }));
+      side.appendChild(a);
+      if (m[2] === 'fav') side.appendChild(el('div', { class: 'sep' }));
+    });
+
+    const bar = el('div', { class: 'appbar' });
+    bar.appendChild(el('span', { class: 'brand', text: 'Tranzlo' }));
+    bar.appendChild(el('span', { class: 'spacer' }));
+    (opts.links || []).forEach(l =>
+      bar.appendChild(el('a', { class: 'lnk' + (l.solid ? ' solid' : ''), href: l.href, text: l.text })));
+    bar.appendChild(el('span', { class: 'goto', html: 'Go to… <kbd>⌘K</kbd>' }));
+    bar.appendChild(el('span', { class: 'company', html: '<i>Company</i>Karachi Institute of Ne…' }));
+    bar.appendChild(el('span', { class: 'icobtn', text: '🌙' }));
+    bar.appendChild(el('span', { class: 'usr', text: 'Mr. Administrator' }));
+
+    document.body.insertBefore(bar, document.body.firstChild);
+    document.body.insertBefore(side, document.body.firstChild);
+  }
+
+  /* ==========================================================================
+     COMPONENT 10 — patient header card + precaution banner (C06)
      ========================================================================== */
   function patientHeader(mount, opts) {
     const host = $(mount);
     if (!host) return;
-    const p = window.DEMO.patient, v = window.DEMO.vitals, age = ageFromDob(p.dob);
-    const main = el('div', { class: 'patient-main' });
-    main.appendChild(el('div', { class: 'avatar', text: p.initials }));
-    main.appendChild(el('div', {}, [
-      el('div', { class: 'p-name', text: p.name }),
-      el('div', { class: 'p-meta', html:
-        '<span>' + p.mrn + '</span><span>' + p.sex + '</span><span>' + age.label +
-        '</span><span>DOB ' + fmtDate(p.dob) + '</span><span>' + window.DEMO.visit.clinic + '</span>' })
-    ]));
-    const vit = el('div', { class: 'vitals' });
-    [['HR', v.hr, '/min'], ['RR', v.rr, '/min'], ['Temp', v.temp, '°C'], ['SpO₂', v.spo2, '%'], ['BP', v.bp, ''], ['Wt', v.weight, 'kg']]
-      .forEach(x => vit.appendChild(el('span', { class: 'vital', html: x[0] + ' <b>' + x[1] + '</b>' + x[2] })));
-    vit.appendChild(el('span', { class: 'status-pill', id: 'statusPill', text: 'Draft' }));
-    main.appendChild(vit);
-    host.appendChild(main);
+    const p = window.DEMO.patient, v = window.DEMO.vitals, r = window.DEMO.referral;
+    const a = ageFromDob(p.dob);
 
-    const banner = el('div', { class: 'precaution-banner empty', id: 'precBanner' }, [
+    const card = el('div', { class: 'pcard' });
+
+    const r1 = el('div', { class: 'prow1' }, [
+      el('span', { class: 'pname', text: p.name }),
+      el('span', { class: 'badge mr', text: p.mrn }),
+      el('span', { class: 'badge trg', text: r.priority + ' referral' }),
+      el('span', { class: 'status-pill badge', id: 'statusPill',
+        style: 'background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)', text: 'Draft' }),
+      el('div', { class: 'pmeta', html:
+        'Referred By: <b>' + r.by + '</b><br>Referred At: <b>' + fmtDate(r.date) + ' at ' + window.DEMO.visit.time + '</b>' })
+    ]);
+    card.appendChild(r1);
+
+    const r2 = el('div', { class: 'prow2' });
+    [['⚥', p.sex], ['🎂', a.label], ['📞', p.contact], ['🏥', window.DEMO.visit.clinic]]
+      .forEach(c => r2.appendChild(el('span', { class: 'pchip', html: '<span class="ic">' + c[0] + '</span>' + c[1] })));
+    [['HR', v.hr, '/min'], ['RR', v.rr, '/min'], ['Temp', v.temp, '°C'], ['SpO₂', v.spo2, '%'],
+     ['BP', v.bp, ''], ['Wt', v.weight, 'kg']]
+      .forEach(x => r2.appendChild(el('span', { class: 'pchip', html: '<span class="ic">' + x[0] + '</span><b>' + x[1] + '</b>' + x[2] })));
+    card.appendChild(r2);
+
+    const r3 = el('div', { class: 'prow3' });
+    (opts && opts.actions ? opts.actions : []).forEach(b => r3.appendChild(b));
+    card.appendChild(r3);
+    host.appendChild(card);
+
+    host.appendChild(el('div', { class: 'precaution-banner empty sticky', id: 'precBanner' }, [
       el('span', { class: 'pb-label', html: '⚠ Active precautions' }),
       el('div', { class: 'pb-items', id: 'precItems' }),
-      el('span', { class: 'hint', style: 'margin-left:auto', text: 'Shown on every section and on the printed record' })
-    ]);
-    host.appendChild(banner);
+      el('span', { class: 'hint', style: 'margin-left:auto', text: 'Follows you down the page and onto the printed record' })
+    ]));
   }
 
   function refreshPrecautions() {
@@ -670,5 +718,5 @@ window.UI = (function () {
 
   return { $, $$, el, store, bus, ageFromDob, fmtDate, pills, getPills, suffixInput,
            milestone, openPicker, buildGrid, chipset, repeater, refTable,
-           patientHeader, refreshPrecautions };
+           shell, patientHeader, refreshPrecautions };
 })();

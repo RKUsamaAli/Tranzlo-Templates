@@ -293,7 +293,8 @@ decisions:
   settled:
     - Prototype is static HTML + CSS + vanilla JS, no build step, opens by double-click.
     - All option lists, grid catalogues and validation rules live in `assessment.config.js`.
-    - Section rail navigation with free movement + autosave, not a locked wizard.
+    - Single scrolling page of cards matching the existing Tranzlo OPD layout;
+      no Back/Next, a Toggle Sections dropdown to hide or jump to any card, autosave.
     - Select-then-grid pattern is used identically in sections 10, 11 and 12.
     - Suffix inputs (value + fixed unit/denominator) are one shared component.
     - Exclusive-option multi-select is one shared component.
@@ -381,8 +382,16 @@ components:
       sex, ward/clinic, primary diagnosis, latest vitals chips,
       referral source, assessment status pill.
 
-  - id: section-rail
-    spec: Left navigation listing sections with completion state and error counts.
+  - id: section-toggle
+    spec: >
+      Toggle Sections dropdown listing every card with a show/hide checkbox, a
+      jump action, and per-section completion state (empty / partial / complete
+      / error). Replaces the earlier left rail; matches the existing OPD screen.
+
+  - id: app-shell
+    spec: >
+      Module icon rail plus dark-green app bar reproduced from the live OPD
+      screen, so the prototype reads as part of the product.
 
 # -----------------------------------------------------------------------------
 # 5. SECTION MAP  (what gets built, and from which image)

@@ -6,12 +6,12 @@
 <link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/print.css">
 <style>
-  .doc{max-width:980px;margin:0 auto;padding:28px 22px 70px}
+  .doc{max-width:1000px;margin:0 auto}
   .doc h1{font-size:26px;margin-bottom:6px}
   .lede{color:var(--muted);font-size:14.5px;max-width:760px;margin:0 0 22px}
   .chg{border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin-bottom:14px;overflow:hidden}
   .chg > .h{display:flex;align-items:center;gap:11px;padding:11px 15px;background:#fbfdfd;border-bottom:1px solid var(--line-2)}
-  .chg > .h .sec{background:var(--teal-700);color:#fff;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}
+  .chg > .h .sec{background:var(--brand);color:#fff;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}
   .chg > .h .ttl{font-weight:700;font-size:14px}
   .chg > .h .st{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:3px 8px;white-space:nowrap}
   .st.decide{background:var(--red-bg);color:var(--red);border:1px solid var(--red-line)}
@@ -22,8 +22,8 @@
   .chg .b > div{padding:12px 15px;font-size:13px;line-height:1.6}
   .chg .b > div:first-child{border-right:1px solid var(--line-2);background:#fdfdfd}
   .chg .k{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted);margin-bottom:4px}
-  .chg .why{padding:12px 15px;border-top:1px solid var(--line-2);background:var(--teal-050);font-size:13px;line-height:1.65}
-  .chg .why .k{color:var(--teal-700)}
+  .chg .why{padding:12px 15px;border-top:1px solid var(--line-2);background:var(--brand-lt);font-size:13px;line-height:1.65}
+  .chg .why .k{color:var(--brand)}
   @media(max-width:720px){.chg .b{grid-template-columns:1fr}.chg .b>div:first-child{border-right:none;border-bottom:1px solid var(--line-2)}}
   .grp-title{font-size:12px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px}
   .qbox{border:1px solid var(--red-line);background:var(--red-bg);border-radius:var(--radius);padding:16px 18px;margin-bottom:22px}
@@ -33,8 +33,6 @@
 </head>
 <body>
 <div class="proto-ribbon">Prototype for client review — <b>demonstration data only</b></div>
-<div class="appbar">
-  <div class="brand"><span class="mark">T</span> Rehabilitation Module</div>
   <span class="crumb">What we changed &amp; why</span>
   <span class="spacer"></span>
   <a class="btn sm" href="index.html">Journey</a>
@@ -42,8 +40,14 @@
   <button class="btn sm" onclick="window.print()">🖨 Print</button>
 </div>
 
-<div class="doc">
-  <h1>What we changed, and why</h1>
+<div class="page"><div class="doc">
+  <div class="pagebar">
+    <h1>What we changed, and why</h1>
+    <span class="spacer"></span>
+    <a class="btn sm" href="index.html">Journey</a>
+    <a class="btn sm primary" href="assessment.html">Open the assessment &rarr;</a>
+    <button class="btn sm" onclick="window.print()">&#128424; Print</button>
+  </div>
   <p class="lede">
     We have built your assessment form as a working prototype. In doing so we changed a number of things —
     not for design preference, but because the form as drawn either could not record the finding, could not be
@@ -241,10 +245,14 @@
     <div class="why"><span class="k">Why</span>Your numbering jumps from 5 to 10, so these sections exist in your form but were not sent. Rather than leave gaps in a form you are reviewing, we have proposed what a paediatric neuro-rehabilitation assessment normally contains at those positions. Replace them with your originals and nothing else in the prototype changes.</div>
   </div>
 
-  <div style="margin-top:30px;display:flex;gap:10px;flex-wrap:wrap">
-    <a class="btn primary" href="assessment.html">Open the assessment →</a>
+  <div style="margin-top:26px;display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn primary" href="assessment.html">Open the assessment &rarr;</a>
     <a class="btn" href="index.html">Back to the patient journey</a>
   </div>
-</div>
+</div></div>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/demo-data.js"></script>
+<script src="assets/js/components.js"></script>
+<script>UI.shell({ active: 'REH' });</script>
 </body>
 </html>
