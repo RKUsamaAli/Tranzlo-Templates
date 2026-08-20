@@ -349,6 +349,7 @@ table.dgrid td.rowname,table.dgrid th.rowname{position:sticky;left:0;background:
 table.dgrid thead th.rowname{background:var(--field-bg);z-index:3}
 table.dgrid tbody tr:hover td.rowname{background:#fbfcfd}
 table.dgrid td.rowname small{display:block;font-weight:400;color:var(--muted);font-size:10.5px}
+table.dgrid td.rowname small.overdue{color:var(--amber);font-weight:600}
 .region-row td{background:var(--field-bg)!important;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;padding:5px 10px!important}
 .grid-empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:var(--radius);background:var(--field-bg)}
 .grid-empty b{display:block;color:var(--ink-2);font-size:14px;margin-bottom:5px}

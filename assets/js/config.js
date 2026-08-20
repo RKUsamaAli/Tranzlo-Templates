@@ -12,6 +12,20 @@ window.CFG = (function () {
      Flip this one value to switch the whole of section 11.               */
   const romMode = 'degrees';
 
+  /* ---- Deployment settings -------------------------------------------------
+     Fields the client asked to be switchable per site rather than removed.
+     Flip a value here and the form changes — no code edit.               */
+  const settings = {
+    restrictTherapistToLoggedInUser : true,   // therapist is the logged-in user, not a dropdown
+    showSupervisingConsultant       : false,  // removed on request
+    surgicalHistoryFormat           : 'text', // 'text' (free box) | 'structured' (rows)
+    showGestationalAgeDays          : false,  // weeks only
+    showBirthHeadCircumference      : false,
+    showDevelopmentalConcerns       : false,  // duplicated by Chief Complaint (section 4)
+    showPreviousPhysiotherapy       : false,  // removed on request
+    precautionDetailNotes           : false   // no free-text note per precaution
+  };
+
   /* ---- Grading scales ---------------------------------------------------- */
   const scales = {
     mas: {
@@ -37,6 +51,17 @@ window.CFG = (function () {
         ['3', 'Active movement against gravity'],
         ['4', 'Active movement against gravity and resistance'],
         ['5', 'Normal strength']
+      ]
+    },
+    fineMotor: {
+      name: 'Fine Motor Performance',
+      suffix: '/3',
+      options: ['0', '1', '2', '3'],
+      rows: [
+        ['0', 'Unable / does not initiate'],
+        ['1', 'Requires significant assistance'],
+        ['2', 'Performs with cues / assistance or reduced accuracy'],
+        ['3', 'Independent / age-appropriate performance']
       ]
     },
     romGraded: {
@@ -140,6 +165,46 @@ window.CFG = (function () {
     { id:'s-nk-flx', region:'Trunk / neck', label:'Neck Flexors' }
   ];
 
+  /* ---- Catalogue: fine motor domains (client images 1-3) ----------------- */
+  const fineMotorCatalogue = [
+    { id:'fm-grasp',      region:'Grasp & manipulation',        label:'Grasping' },
+    { id:'fm-pincer',     region:'Grasp & manipulation',        label:'Pincer Grasp' },
+    { id:'fm-bilateral',  region:'Grasp & manipulation',        label:'Bilateral Hand Use' },
+    { id:'fm-manip',      region:'Grasp & manipulation',        label:'Hand Manipulation' },
+    { id:'fm-vmi',        region:'Visual-motor & functional use', label:'Visual-Motor Integration' },
+    { id:'fm-prewrite',   region:'Visual-motor & functional use', label:'Pre-Writing Skills' },
+    { id:'fm-tool',       region:'Visual-motor & functional use', label:'Tool Use' },
+    { id:'fm-functional', region:'Visual-motor & functional use', label:'Functional Fine Motor' }
+  ];
+
+  /* ---- Catalogue: primitive reflex screening (client image 5) -------------
+     `by` = age in months by which the reflex is normally integrated.
+     Retention past that age is the clinical finding.                      */
+  const reflexCatalogue = [
+    { id:'rf-moro',    region:'Primitive reflexes', label:'Moro',          by:6  },
+    { id:'rf-atnr',    region:'Primitive reflexes', label:'ATNR',          by:6  },
+    { id:'rf-stnr',    region:'Primitive reflexes', label:'STNR',          by:11 },
+    { id:'rf-tlr',     region:'Primitive reflexes', label:'TLR',           by:6  },
+    { id:'rf-palmar',  region:'Primitive reflexes', label:'Palmar Grasp',  by:6  },
+    { id:'rf-plantar', region:'Primitive reflexes', label:'Plantar Grasp', by:12 },
+    { id:'rf-galant',  region:'Primitive reflexes', label:'Galant',        by:9  },
+    { id:'rf-rooting', region:'Feeding reflexes',   label:'Rooting',       by:4  },
+    { id:'rf-sucking', region:'Feeding reflexes',   label:'Sucking',       by:4  }
+  ];
+
+  /* ---- WHO gross motor milestones (client image 4) -----------------------
+     `win` = WHO Multicentre Growth Reference Study achievement window,
+     1st to 99th percentile, in months. `from` links the milestone to the
+     matching field in section 3 so nothing is typed twice.               */
+  const whoMilestones = [
+    { id:'who-sit',         label:'Sitting without support',   win:[3.8, 9.2],  from:'ms-sit'   },
+    { id:'who-crawl',       label:'Hands-and-knees crawling',  win:[5.2, 13.5], from:'ms-crawl' },
+    { id:'who-standassist', label:'Standing with assistance',  win:[4.8, 11.4] },
+    { id:'who-walkassist',  label:'Walking with assistance',   win:[5.9, 13.7] },
+    { id:'who-standalone',  label:'Standing alone',            win:[6.9, 16.9], from:'ms-stand' },
+    { id:'who-walkalone',   label:'Walking alone',             win:[8.2, 17.6], from:'ms-walk'  }
+  ];
+
   /* ---- Presets (C15) — load a whole screen in one click ------------------ */
   const presets = {
     tone: {
@@ -154,6 +219,16 @@ window.CFG = (function () {
       'Spine / neck':['r-cv-flx','r-cv-ext','r-cv-rot','r-cv-lat'],
       'CP baseline': ['r-hp-abd','r-hp-ext','r-hp-pop','r-kn-ext','r-an-df','r-el-ext','r-wr-ext'],
       'Full body':   romCatalogue.map(i => i.id)
+    },
+    fineMotor: {
+      'Early years':      ['fm-grasp','fm-pincer','fm-bilateral','fm-manip'],
+      'School readiness': ['fm-vmi','fm-prewrite','fm-tool','fm-functional'],
+      'Full screen':      fineMotorCatalogue.map(i => i.id)
+    },
+    reflex: {
+      'Infant screen':  ['rf-moro','rf-rooting','rf-sucking','rf-palmar','rf-atnr'],
+      'Postural set':   ['rf-atnr','rf-stnr','rf-tlr','rf-galant'],
+      'Full screen':    reflexCatalogue.map(i => i.id)
     },
     strength: {
       'Upper limb':  ['s-sh-flx','s-sh-abd','s-el-flx','s-el-ext','s-wr-ext','s-grip'],
@@ -186,12 +261,12 @@ window.CFG = (function () {
      `exclusive:true` means selecting it clears every sibling (C07).       */
   const options = {
     precautions: [
-      { v:'bone',  t:'Bone fragility', detail:true, danger:true },
+      { v:'bone',  t:'Bone fragility', danger:true },
       { v:'card',  t:'Cardiac', danger:true },
       { v:'resp',  t:'Respiratory', danger:true },
       { v:'seiz',  t:'Seizures', danger:true },
       { v:'shunt', t:'Shunt (VP)', danger:true },
-      { v:'ortho', t:'Orthopaedic', detail:true, danger:true },
+      { v:'ortho', t:'Orthopaedic', danger:true },
       { v:'skin',  t:'Skin integrity', danger:true },
       { v:'none',  t:'No precautions', exclusive:true }
     ],
@@ -253,6 +328,17 @@ window.CFG = (function () {
       { v:'scoliosis', t:'Scoliosis' }, { v:'wsit', t:'W-sit' },
       { v:'propped', t:'Propped' }, { v:'unable', t:'Unable to sit' }
     ],
+    reflexStatus:       ['Integrated', 'Retained', 'Absent', 'Asymmetrical', 'Not age appropriate', 'Not tested'],
+    reflexResponse:     ['Normal', 'Delayed', 'Abnormal'],
+    reflexSignificance: ['No concern', 'Monitor', 'Further assessment required'],
+    grossMotorStatus:   ['Achieved', 'Not achieved', 'Unable to test'],
+    handDominance:      ['Right', 'Left', 'Not yet established', 'Mixed / inconsistent'],
+    rehabDepartments: [
+      'Physiotherapy', 'Occupational Therapy', 'Speech & Language Therapy',
+      'Clinical Psychology', 'Special Education', 'Hydrotherapy',
+      'Orthotics & Prosthetics', 'Behavioural Therapy', 'Audiology', 'Nutrition & Dietetics'
+    ],
+    durationUnits: ['Days', 'Weeks', 'Months', 'Years'],
     deliveryMode: ['SVD', 'Instrumental', 'Elective C/S', 'Emergency C/S'],
     complaintSuggestions: [
       'Delayed motor milestones', 'Difficulty walking', 'Abnormal gait',
@@ -270,6 +356,7 @@ window.CFG = (function () {
     goalPriority: ['High', 'Medium', 'Low']
   };
 
-  return { romMode, scales, ntReasons, toneCatalogue, romCatalogue,
-           strengthCatalogue, presets, milestones, painScales, options };
+  return { romMode, settings, scales, ntReasons, toneCatalogue, romCatalogue,
+           strengthCatalogue, fineMotorCatalogue, reflexCatalogue, whoMilestones,
+           presets, milestones, painScales, options };
 })();

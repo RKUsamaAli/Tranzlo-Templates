@@ -57,13 +57,44 @@
   </p>
 
   <div class="qbox">
-    <h3>We need four answers from you before implementation</h3>
+    <h3>Decisions we still need from you</h3>
     <ol>
-      <li><b>Range of motion — degrees or the 0–4 score?</b> The prototype uses degrees; your original 0–4 scale is a one-line switch. See change #2.</li>
-      <li><b>Sections 1 and 6–9</b> — your numbering references them but no images were supplied. We have drafted them. Please confirm or send the originals.</li>
-      <li><b>Standardised outcome measures</b> — are GMFM, GMFCS, MACS or PEDI in scope? Each is a scored instrument and a section of its own.</li>
-      <li><b>Paediatric only, or adults too?</b> Birth and developmental history only applies to children.</li>
+      <li><b>Range of motion — degrees or the 0&ndash;4 score?</b> The prototype uses degrees; your original 0&ndash;4 scale is a one-line switch. See change #2.</li>
+      <li><b>Fine motor — one score per domain, or separate left and right?</b> We built one score, as your table does. Grasping, pincer and hand manipulation are hand-specific and differ sharply in hemiplegia. Small change now, large one later.</li>
+      <li><b>WHO milestones overlap section 3.</b> Sitting, crawling, standing alone and walking alone are asked in both places. They pre-fill so nothing is typed twice, but we recommend keeping them only in the WHO section. Confirm and we will make the change.</li>
+      <li><b>Sections 1, 6, 7 and 9</b> — still drafted by us, no images supplied. Please confirm or replace.</li>
+      <li><b>Standardised outcome measures</b> — GMFCS is now in section 13. Do you also need GMFM-66/88, MACS or PEDI? Each is a scored instrument and a section of its own.</li>
+      <li><b>Paediatric only, or adults too?</b> Birth history, developmental milestones and the reflex screen only apply to children.</li>
     </ol>
+  </div>
+
+  <div class="grp-title">New sections built from your latest images</div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">&sect;8</span><span class="ttl">Pediatric Reflex Screening &mdash; one status per reflex, not one for the screen</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Your layout</span>A checklist of nine reflexes, then a single <b>Status</b>, a single <b>Response</b> and a single <b>Clinical Significance</b> underneath, applying to the whole screen.</div>
+      <div><span class="k">Prototype</span>You tick which reflexes you screened; each loads its own row with Status, Response, Clinical Significance and Remarks. Presets load an <b>Infant screen</b>, the <b>Postural set</b> or all nine.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>One status cannot describe nine reflexes. A child with cerebral palsy typically has a retained ATNR and an integrated Moro at the same time &mdash; that contrast <i>is</i> the finding, and a shared status erases it. Retained ATNR on its own changes seating, positioning and hand-function goals, so it has to be recorded against the reflex it belongs to. We also print the age each reflex normally integrates by, and turn it amber when this child is already past it.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">&sect;13</span><span class="ttl">Gross Motor &mdash; WHO achievement windows added</span><span class="st decide">Decision needed</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>Six WHO milestones, each with <b>Achieved / Not achieved / Unable to test</b>.</div>
+      <div><span class="k">Prototype</span>The same three options, plus <b>age achieved</b> in months, the published <b>WHO window</b> (1st&ndash;99th percentile) beside each skill, and an automatic interpretation: within window, late, or overdue for a child of this age. GMFCS level added below.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>"Achieved" alone cannot tell you whether a two-year-old who walks is normal or a year late &mdash; and that distinction is the entire reason these six milestones are used. The WHO windows are the published reference the instrument exists for; printing them beside the field turns a tick-box into an assessment. <b>Decision needed:</b> four of these six are also asked in section 3. They pre-fill automatically so nothing is typed twice, but two homes for one fact drift apart eventually. We recommend section 3 keeps only what WHO does not cover &mdash; head control, rolling and first words.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">&sect;14</span><span class="ttl">Fine Motor &mdash; eight domains, scored 0&ndash;3</span><span class="st decide">Decision needed</span></div>
+    <div class="b">
+      <div><span class="k">Your form</span>A fixed eight-row Domain table with the 0&ndash;3 scoring key.</div>
+      <div><span class="k">Prototype</span>The same eight domains and the same scoring key, loaded by selection. Presets: <b>Early years</b> (grasping, pincer, bilateral use, manipulation) and <b>School readiness</b> (visual-motor, pre-writing, tool use, functional). Hand dominance recorded above the grid.</div>
+    </div>
+    <div class="why"><span class="k">Why not a fixed table</span>Pre-writing and tool use are meaningless for an eighteen-month-old, and scoring them 0 would record a deficit that does not exist. Loading only the age-relevant domains means every visible row is a real finding. <b>Decision needed:</b> we score one value per domain, as your table does &mdash; do you want separate left and right scores on the hand-specific domains?</div>
   </div>
 
   <div class="grp-title">Changes that affect what the form can record</div>
@@ -122,6 +153,44 @@
     <div class="why"><span class="k">Why</span>These are different clinical axes and a child has an answer to both at the same time. Mixed into one list, the therapist must choose between recording that the child is alert and recording that the child is spastic.</div>
   </div>
 
+  <div class="grp-title">Field changes you asked for in this round</div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">&sect;1</span><span class="ttl">Therapist is the logged-in user; supervising consultant removed</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Before</span>A dropdown of therapists, plus a supervising-consultant text box.</div>
+      <div><span class="k">Now</span>The assessing therapist is whoever is signed in, shown read-only with their licence number. Supervising consultant removed.</div>
+    </div>
+    <div class="why"><span class="k">Why it is the right call</span>A therapist dropdown lets one person record an assessment under another person&rsquo;s name &mdash; by accident or otherwise &mdash; which breaks the attribution the record depends on. Binding it to the session removes the possibility.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">&sect;4</span><span class="ttl">Onset date and duration now derive each other</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Before</span>Duration was read-only, calculated from the onset date.</div>
+      <div><span class="k">Now</span>Both are open. Enter <b>6 months</b> and the onset date fills in; enter a date and the duration fills in. Duration comes first in the row.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>A parent almost never gives a date &mdash; they say &ldquo;about six months&rdquo;. Making the therapist work backwards to a calendar date before the form accepts anything wastes time and produces invented dates.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">&sect;3</span><span class="ttl">Schooling, therapies, and a removed duplicate</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Before</span>&ldquo;Current school / grade&rdquo; and &ldquo;Therapies currently received&rdquo; were free-text boxes. &ldquo;Developmental concerns raised by the family&rdquo; was a third box.</div>
+      <div><span class="k">Now</span>Schooling asks yes/no first and only shows the grade box if yes. Therapies is a pick-list of <b>your own rehabilitation departments</b>. Developmental concerns removed.</div>
+    </div>
+    <div class="why"><span class="k">Why</span>&ldquo;Current school / grade&rdquo; had no valid answer for a child not in school. Free-text therapies meant &ldquo;SLT&rdquo;, &ldquo;speech&rdquo; and &ldquo;Speech Therapy&rdquo; all sat in the database as different services, so you could never count how many patients you share with another department. And developmental concerns asked for the same thing as Chief Complaint &mdash; two boxes for one answer means one is always the empty one.</div>
+  </div>
+
+  <div class="chg">
+    <div class="h"><span class="sec">Various</span><span class="ttl">Fields made settings-driven rather than deleted</span><span class="st applied">Applied</span></div>
+    <div class="b">
+      <div><span class="k">Off by default</span>Gestational age <b>days</b>; birth <b>head circumference</b>; the <b>Previous physiotherapy</b> block; per-precaution note boxes. Surgical history now a free-text box.</div>
+      <div><span class="k">How to change one</span>All eight switches sit in one place, <code>assets/js/config.js</code> &rarr; <code>settings</code>. Surgical history flips between a free-text box and structured rows with one value.</div>
+    </div>
+    <div class="why"><span class="k">Why settings and not deletion</span>Gestational-age days is noise in a general paediatric clinic and genuinely useful in a neonatal-heavy one &mdash; correcting a preterm child&rsquo;s age depends on it. Deleting the field means the second site cannot have it without a code change; a setting means both run the same build. The same reasoning applies to structured versus free-text surgical history: a site that wants to report on procedures needs rows, a site that just wants a note does not.</div>
+  </div>
+
   <div class="grp-title">Changes that protect data quality</div>
 
   <div class="chg">
@@ -175,7 +244,7 @@
     <div class="h"><span class="sec">All</span><span class="ttl">Precautions follow the therapist through the form</span><span class="st safety">Patient safety</span></div>
     <div class="b">
       <div><span class="k">Your form</span>A checkbox row at the bottom of section 2 — bone fragility, cardiac, respiratory, seizures, shunt, orthopaedic, skin integrity.</div>
-      <div><span class="k">Prototype</span>Whatever is ticked appears as a <b>red banner pinned under the patient name on every section</b> and on the printed record. Bone fragility and Orthopaedic require a short note (which segment, weight-bearing status).</div>
+      <div><span class="k">Prototype</span>Whatever is ticked appears as a <b>red banner pinned under the patient name on every section</b> and on the printed record. The banner stays with the therapist as they scroll the page.</div>
     </div>
     <div class="why"><span class="k">Why</span>A therapist about to mobilise a child with osteogenesis imperfecta or a VP shunt should not be relying on a checkbox they ticked eight screens earlier. This is the cheapest safety improvement in the whole form.</div>
   </div>

@@ -63,18 +63,8 @@
           <span class="err-msg">Required</span>
         </div>
         <div class="field">
-          <label class="req">Assessing therapist</label>
-          <select data-field="therapist" data-required="1">
-            <option value="">Select…</option>
-            <option selected>Ms. Fatima Nadeem (PT-PK-40219)</option>
-            <option>Mr. Bilal Haider (PT-PK-38804)</option>
-            <option>Ms. Ayesha Tariq (PT-PK-41550)</option>
-          </select>
-          <span class="err-msg">Required</span>
-        </div>
-        <div class="field">
-          <label>Supervising consultant</label>
-          <input type="text" data-field="supervisor" value="Dr. Ahmed Raza">
+          <label>Assessing therapist <span class="hint">— logged-in user</span></label>
+          <input type="text" data-field="therapist" id="therapistField" readonly>
         </div>
         <div class="field">
           <label class="req">Assessment date</label>
@@ -119,7 +109,7 @@
         <div class="chipset" id="secondaryDx"></div>
       </div>
 
-      <div class="field" style="margin-bottom:6px"><label>Surgical history</label></div>
+      <div class="field" style="margin-bottom:6px"><label>Surgical history</label><span class="hint" id="surgeryModeHint"></span></div>
       <div id="surgeries"></div>
 
       <details class="change-note">
@@ -138,8 +128,8 @@
       <details class="change-note">
         <summary>Precautions now follow the therapist through the whole form</summary>
         <div class="cn-body">
-          <p><span class="cn-k">What changed</span> — Precautions were one checkbox row at the bottom of section 2. Now, whatever you tick here appears as a <b>red banner pinned under the patient name on every section</b> and on the printed record. "Bone fragility" and "Orthopaedic" additionally require a short note.</p>
-          <p><span class="cn-k">Why</span> — A therapist mobilising a child with fragile bones or a VP shunt should not have to remember a checkbox they ticked eight screens ago. Tick one below and watch the banner appear at the top of the page.</p>
+          <p><span class="cn-k">What changed</span> — Precautions were one checkbox row at the bottom of section 2. Now, whatever you tick here appears as a <b>red banner pinned under the patient name</b> that stays with you as you scroll, and prints on the record.</p>
+          <p><span class="cn-k">Why</span> — A therapist mobilising a child with fragile bones or a VP shunt should not have to remember a checkbox they ticked eight cards ago. Tick one below and watch the banner appear at the top of the page.</p>
         </div>
       </details>
 
@@ -159,16 +149,16 @@
       <div class="sub">Birth history</div>
       <div class="grid4">
         <div class="field"><label>Gestational age — weeks</label><div id="gaWeeks"></div></div>
-        <div class="field"><label>&nbsp;days</label><div id="gaDays"></div></div>
+        <div class="field opt-gaDays"><label>&nbsp;days</label><div id="gaDays"></div></div>
         <div class="field"><label>Birth weight</label><div id="birthWeight"></div></div>
-        <div class="field"><label>Head circumference at birth</label><div id="birthHc"></div></div>
+        <div class="field opt-birthHc"><label>Head circumference at birth</label><div id="birthHc"></div></div>
       </div>
 
       <details class="change-note">
-        <summary>Gestational age split into weeks + days</summary>
+        <summary>Gestational-age days and birth head circumference are settings-driven</summary>
         <div class="cn-body">
-          <p><span class="cn-k">What changed</span> — One free-text box became two numeric fields.</p>
-          <p><span class="cn-k">Why</span> — Prematurity is graded in weeks <i>and</i> days (32+4 is not 32+0), and corrected age for a preterm child is calculated from it. Free text cannot be calculated with. The prototype uses this to compute corrected age automatically.</p>
+          <p><span class="cn-k">What changed</span> — Both fields are <b>off by default</b> and controlled from the configuration, not by editing the form.</p>
+          <p><span class="cn-k">Why</span> — Prematurity is properly graded in weeks <i>and</i> days (32+4 is not 32+0), and a preterm child's corrected age is calculated from it — so the field has real value for a neonatal-heavy caseload. For a general paediatric clinic it is noise. Making it a setting means one site can have it and another not, from the same build.</p>
         </div>
       </details>
 
@@ -203,11 +193,27 @@
 
       <div class="grid4" id="milestones"></div>
 
-      <div class="grid2" style="margin-top:18px">
-        <div class="field"><label>Current school / grade</label><input type="text" data-field="school" placeholder="e.g. Special education unit, Grade 1"></div>
-        <div class="field"><label>Therapies currently received</label><input type="text" data-field="otherTherapy" placeholder="e.g. Speech therapy twice weekly"></div>
-        <div class="field span2"><label>Developmental concerns raised by the family</label><textarea data-field="devConcerns" placeholder="In the family's own words…"></textarea></div>
+      <div class="sub">Schooling &amp; other services</div>
+      <div class="grid3">
+        <div class="field">
+          <label>Currently attending school</label>
+          <div class="radios" id="schoolAttending"></div>
+        </div>
+        <div class="field school-detail" style="display:none"><label>School / grade</label><input type="text" data-field="school" placeholder="e.g. Special education unit, Grade 1"></div>
+        <div class="field">
+          <label>Therapies currently received <span class="hint">— rehab departments</span></label>
+          <div id="otherTherapy"></div>
+        </div>
       </div>
+
+      <details class="change-note">
+        <summary>Two changes here you asked for</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">Schooling</span> — "Current school / grade" was one text box that had no answer for a child who is not in school. It is now a yes/no first; the grade box only appears when the answer is yes.</p>
+          <p><span class="cn-k">Therapies</span> — free text replaced by a pick-list of your own rehabilitation departments. Free text meant "SLT", "speech", "Speech Therapy" and "S/L therapy" all sat in the database as different services, so you could never count how many of your patients are shared with another department. Picking from the department list makes that a report.</p>
+          <p><span class="cn-k">Removed</span> — "Developmental concerns raised by the family" has gone. It asked for the same thing as Chief Complaint in section 4, and two boxes for one answer means one of them is always the empty one.</p>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -234,9 +240,23 @@
         <div class="field"><label>Onset type</label>
           <select data-field="onsetType"><option value="">Select…</option><option>Since birth</option><option>Gradual</option><option>Sudden</option><option>Post-operative</option><option>Post-injury</option></select>
         </div>
-        <div class="field"><label>Onset date <span class="hint">(or approximate)</span></label><input type="date" data-field="onsetDate"></div>
-        <div class="field"><label>Duration</label><input type="text" data-field="duration" placeholder="calculated" readonly style="background:#f7fafb"></div>
+        <div class="field">
+          <label>Duration</label>
+          <div style="display:flex;gap:8px">
+            <input type="number" min="0" data-field="durationValue" id="durationValue" placeholder="—" style="flex:1">
+            <select data-field="durationUnit" id="durationUnit" style="flex:1.1"></select>
+          </div>
+        </div>
+        <div class="field"><label>Onset date <span class="hint">(or approximate)</span></label><input type="date" data-field="onsetDate" id="onsetDate"></div>
       </div>
+
+      <details class="change-note">
+        <summary>Onset date and duration now calculate each other</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What changed</span> — Duration was a read-only box computed from the onset date. Both are now open: enter a duration and the onset date fills in; enter an onset date and the duration fills in. Duration sits first because it is what families actually say.</p>
+          <p><span class="cn-k">Why</span> — A parent almost never gives a date. They say "about six months". Forcing the therapist to work backwards to a calendar date before the form will accept anything wastes time and produces invented dates. Let them enter whichever they were told, and the form derives the other.</p>
+        </div>
+      </details>
 
       <div class="field" style="margin-top:16px"><label>Aggravating factors</label>
         <div id="aggravatingPills" style="margin-bottom:8px"></div>
@@ -259,15 +279,17 @@
       <div id="goals"></div>
       <span class="err-msg" id="goalsErr" style="display:none">At least one goal is required</span>
 
-      <div class="sub">Previous physiotherapy</div>
-      <div class="grid4">
-        <div class="field"><label>Received previously?</label>
-          <select data-field="prevPhysio" id="prevPhysio"><option value="">Select…</option><option value="no">No</option><option value="yes">Yes</option></select>
-        </div>
-        <div class="field prev-physio" style="display:none"><label>Where</label><input type="text" data-field="prevWhere"></div>
-        <div class="field prev-physio" style="display:none"><label>Approx. sessions</label><input type="number" data-field="prevSessions" min="0"></div>
-        <div class="field prev-physio" style="display:none"><label>Outcome</label>
-          <select data-field="prevOutcome"><option value="">Select…</option><option>Improved</option><option>No change</option><option>Deteriorated</option><option>Discontinued</option></select>
+      <div class="prev-physio-block" style="display:none">
+        <div class="sub">Previous physiotherapy</div>
+        <div class="grid4">
+          <div class="field"><label>Received previously?</label>
+            <select data-field="prevPhysio" id="prevPhysio"><option value="">Select…</option><option value="no">No</option><option value="yes">Yes</option></select>
+          </div>
+          <div class="field prev-physio" style="display:none"><label>Where</label><input type="text" data-field="prevWhere"></div>
+          <div class="field prev-physio" style="display:none"><label>Approx. sessions</label><input type="number" data-field="prevSessions" min="0"></div>
+          <div class="field prev-physio" style="display:none"><label>Outcome</label>
+            <select data-field="prevOutcome"><option value="">Select…</option><option>Improved</option><option>No change</option><option>Deteriorated</option><option>Discontinued</option></select>
+          </div>
         </div>
       </div>
     </div>
@@ -345,14 +367,35 @@
     </div>
   </section>
 
-  <section class="card hidden" id="sec-8" data-hidden="1" data-num="8" data-title="Reflexes &amp; Reactions">
-    <div class="ch"><h2><span class="num">8</span> Reflexes &amp; Reactions</h2><span class="tag draft">Draft — no image supplied</span></div>
+  <section class="card" id="sec-8" data-num="8" data-title="Pediatric Reflex Screening">
+    <div class="ch"><h2><span class="num">8</span> Pediatric Reflex Screening</h2><span class="tag src">From your image 5</span></div>
     <div class="cb">
-      <div class="callout draft"><b>Drafted by us — please confirm or replace.</b> Primitive reflexes and postural reactions are standard in a paediatric neuro assessment and are missing from the numbering you supplied.</div>
-      <div class="sub">Primitive reflexes</div>
-      <div id="primitiveReflexes"></div>
-      <div class="sub">Postural reactions</div>
-      <div id="posturalReactions"></div>
+
+      <details class="change-note" open>
+        <summary>Built as a per-reflex grid rather than one status for the whole screen</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">Your layout</span> — a checklist of reflexes, then a single Status, a single Response and a single Clinical Significance underneath.</p>
+          <p><span class="cn-k">Prototype</span> — you tick which reflexes you screened, and each one loads a row with <b>its own</b> Status, Response, Clinical Significance and Remarks.</p>
+          <p><span class="cn-k">Why</span> — One status cannot describe nine reflexes. A child with cerebral palsy typically has a retained ATNR and an integrated Moro at the same time; that is the finding, and a single shared status erases it. Retained ATNR alone changes seating, positioning and hand-function goals, so it has to be recorded against the reflex it belongs to.</p>
+          <p><span class="cn-k">Added</span> — each row shows the age by which the reflex normally integrates, and turns amber when this child is already past it. Age is read from the date of birth.</p>
+        </div>
+      </details>
+
+      <div id="grid-reflex"></div>
+
+      <div class="grid2" style="margin-top:16px">
+        <div class="field"><label>Overall screening impression</label>
+          <select data-field="reflexImpression">
+            <option value="">Select…</option>
+            <option>Age-appropriate — no retained primitive reflexes</option>
+            <option>Isolated retention — monitor</option>
+            <option>Multiple retained reflexes — significant</option>
+            <option>Asymmetrical pattern — significant</option>
+            <option>Screening incomplete</option>
+          </select>
+        </div>
+        <div class="field"><label>Remarks</label><textarea data-field="reflexRemarks"></textarea></div>
+      </div>
     </div>
   </section>
 
@@ -454,19 +497,74 @@
   </section>
 
   <!-- ===================== 13+ PLACEHOLDERS =========================== -->
-  <section class="card" id="sec-13" data-num="13" data-title="Coming next">
+  <section class="card" id="sec-13" data-num="13" data-title="Pediatric Gross Motor Assessment">
+    <div class="ch"><h2><span class="num">13</span> Pediatric Gross Motor Assessment</h2><span class="tag src">From your image 4</span></div>
+    <div class="cb">
+
+      <details class="change-note" open>
+        <summary>WHO windows shown, and these six are not typed twice</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">Added</span> — each milestone shows the <b>WHO achievement window</b> (1st to 99th percentile from the WHO Multicentre Growth Reference Study). Enter the age achieved and the form says whether it falls inside the window, is late, or is overdue for a child of this age.</p>
+          <p><span class="cn-k">Why</span> — "Achieved / Not achieved" alone does not tell you whether a two-year-old who walks is normal or two years late. The WHO windows are the published reference these six milestones exist for; printing them beside the field is the difference between a tick-box and an assessment.</p>
+          <p><span class="cn-k">Overlap you should decide on</span> — <b>Sitting, crawling, standing alone and walking alone also appear in section 3.</b> They pre-fill here automatically so nothing is typed twice, but two homes for one fact will drift apart eventually. Our recommendation: keep the WHO six here and leave section 3 with the milestones WHO does not cover — head control, rolling and first words. Tell us and we will make that change.</p>
+        </div>
+      </details>
+
+      <div id="grid-who"></div>
+
+      <div class="grid2" style="margin-top:16px">
+        <div class="field"><label>GMFCS level <span class="hint">— if cerebral palsy</span></label>
+          <select data-field="gmfcs">
+            <option value="">Not applicable</option>
+            <option>Level I — walks without limitations</option>
+            <option>Level II — walks with limitations</option>
+            <option>Level III — walks using a hand-held mobility device</option>
+            <option>Level IV — self-mobility with limitations; may use powered mobility</option>
+            <option>Level V — transported in a manual wheelchair</option>
+          </select>
+        </div>
+        <div class="field"><label>Gross motor observations</label><textarea data-field="grossMotorNotes"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="sec-14" data-num="14" data-title="Fine Motor Assessment">
+    <div class="ch"><h2><span class="num">14</span> Fine Motor Assessment</h2><span class="tag src">From your images 1&ndash;3</span></div>
+    <div class="cb">
+
+      <details class="change-note" open>
+        <summary>Same select-then-score pattern as the other grids</summary>
+        <div class="cn-body">
+          <p><span class="cn-k">What we built</span> — your eight domains as a catalogue you pick from, each scored 0&ndash;3 on the scale from your third image. Presets load <b>Early years</b> (grasping, pincer, bilateral use, manipulation) or <b>School readiness</b> (visual-motor, pre-writing, tool use, functional) in one press.</p>
+          <p><span class="cn-k">Why not a fixed eight-row table</span> — pre-writing and tool use are meaningless for an eighteen-month-old, and scoring them 0 would wrongly record a deficit. Loading only the domains that apply to the child's age means every visible row is a real finding.</p>
+          <p><span class="cn-k">Open question for you</span> — we score one value per domain, as your table does. Several of these domains (grasping, pincer, hand manipulation) are genuinely hand-specific, and in hemiplegia the two hands differ sharply. Do you want <b>separate left and right scores</b> on those rows? It is a small change now and a large one later.</p>
+        </div>
+      </details>
+
+      <div class="grid3" style="margin-bottom:16px">
+        <div class="field"><label>Hand dominance</label><div class="radios" id="handDominance"></div></div>
+      </div>
+
+      <div id="fmRef"></div>
+      <div id="grid-finemotor"></div>
+
+      <div class="field" style="margin-top:16px"><label>Fine motor observations</label><textarea data-field="fineMotorNotes" placeholder="Grasp patterns used, compensations, endurance, attention to task…"></textarea></div>
+    </div>
+  </section>
+
+  <section class="card" id="sec-15" data-num="15" data-title="Coming next">
     <div class="ch"><h2>Coming next</h2><span class="tag">Placeholders — awaiting your requirements</span></div>
     <div class="cb">
       <div class="callout"><b>These sections are deliberately not built yet.</b> They continue the assessment after section 12. Send the requirements or screenshots and we will build them into the same shell — the navigation, patient header, precaution banner, validation and print output already accommodate them.</div>
       <div class="ph-grid">
-        <div class="ph-card"><h5><span class="n">13</span> Balance &amp; Coordination</h5><p>Sitting / standing balance grades, Berg or Paediatric Balance Scale, coordination tests.</p></div>
-        <div class="ph-card"><h5><span class="n">14</span> Gait Analysis</h5><p>Observational gait, deviations by phase, aids used, distance and endurance.</p></div>
-        <div class="ph-card"><h5><span class="n">15</span> Functional Mobility</h5><p>Transfers, bed mobility, stairs, level of assistance, wheelchair skills.</p></div>
-        <div class="ph-card"><h5><span class="n">16</span> Standardised Outcome Measures</h5><p>GMFM-66/88, GMFCS, MACS, PEDI, 6MWT. Each is a scored instrument — please confirm which are in scope.</p></div>
-        <div class="ph-card"><h5><span class="n">17</span> Assessment Summary</h5><p>Clinical impression, problem list, prognosis.</p></div>
-        <div class="ph-card"><h5><span class="n">18</span> Goals (SMART)</h5><p>Short and long-term goals carried forward from section 4, with target dates.</p></div>
-        <div class="ph-card"><h5><span class="n">19</span> Treatment Plan</h5><p>Interventions, frequency, duration, review date.</p></div>
-        <div class="ph-card"><h5><span class="n">20</span> Home Programme</h5><p>Parent-facing exercise sheet — confirm whether Urdu printing is required.</p></div>
+        <div class="ph-card"><h5><span class="n">15</span> Balance &amp; Coordination</h5><p>Sitting / standing balance grades, Berg or Paediatric Balance Scale, coordination tests.</p></div>
+        <div class="ph-card"><h5><span class="n">16</span> Gait Analysis</h5><p>Observational gait, deviations by phase, aids used, distance and endurance.</p></div>
+        <div class="ph-card"><h5><span class="n">17</span> Functional Mobility</h5><p>Transfers, bed mobility, stairs, level of assistance, wheelchair skills.</p></div>
+        <div class="ph-card"><h5><span class="n">18</span> Standardised Outcome Measures</h5><p>GMFM-66/88, GMFCS, MACS, PEDI, 6MWT. Each is a scored instrument — please confirm which are in scope.</p></div>
+        <div class="ph-card"><h5><span class="n">19</span> Assessment Summary</h5><p>Clinical impression, problem list, prognosis.</p></div>
+        <div class="ph-card"><h5><span class="n">20</span> Goals (SMART)</h5><p>Short and long-term goals carried forward from section 4, with target dates.</p></div>
+        <div class="ph-card"><h5><span class="n">21</span> Treatment Plan</h5><p>Interventions, frequency, duration, review date.</p></div>
+        <div class="ph-card"><h5><span class="n">22</span> Home Programme</h5><p>Parent-facing exercise sheet — confirm whether Urdu printing is required.</p></div>
       </div>
     </div>
   </section>

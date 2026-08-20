@@ -11,6 +11,8 @@ meta:
     - Every change from the `challenges` list below is explained on screen in an
       expandable CHANGE panel, and consolidated in change-notes.html.
     - Q1 (ROM degrees vs 0-4) shipped BOTH ways; flip `romMode` in assets/js/config.js.
+    - "Round 2 (client images 1-5) — section 8 rebuilt as Pediatric Reflex Screening; section 13 Pediatric Gross Motor with WHO milestone windows; section 14 Fine Motor."
+    - "Round 2 field requests applied; optional fields moved behind CFG.settings rather than deleted."
   author: Usama Ali
   date: 2026-08-18
   purpose: >
@@ -298,7 +300,9 @@ decisions:
     - Select-then-grid pattern is used identically in sections 10, 11 and 12.
     - Suffix inputs (value + fixed unit/denominator) are one shared component.
     - Exclusive-option multi-select is one shared component.
-    - Sections 13+ are labelled placeholders only.
+    - Sections 15+ are labelled placeholders only.
+    - Optional/site-specific fields live behind CFG.settings, not deleted, so one
+      build serves clinics with different needs.
     - Desktop-first, but usable on a 10-inch tablet in landscape (therapists carry tablets).
 
   open_questions:

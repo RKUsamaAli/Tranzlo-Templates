@@ -24,8 +24,8 @@ window.UI = (function () {
   /* ---------- store ------------------------------------------------------- */
   const store = {
     fields: {},                 // simple field values
-    selected: { tone: [], rom: [], strength: [] },
-    grid: { tone: {}, rom: {}, strength: {} },
+    selected: { tone: [], rom: [], strength: [], fineMotor: [], reflex: [] },
+    grid: { tone: {}, rom: {}, strength: {}, fineMotor: {}, reflex: {} },
     allergies: [], precautions: [], secondaryDx: [], surgeries: [], goals: [],
     compare: false,
     dirty: false
@@ -236,6 +236,7 @@ window.UI = (function () {
         lab.appendChild(cb);
         lab.appendChild(el('span', { text: it.label }));
         if (it.norm && CFG.romMode === 'degrees') lab.appendChild(el('span', { class: 'norm', text: shortNorm(it) }));
+        else if (it.by) lab.appendChild(el('span', { class: 'norm', text: 'by ~' + it.by + ' mo' }));
         listEl.appendChild(lab);
       });
       all.addEventListener('click', () => {
@@ -375,6 +376,8 @@ window.UI = (function () {
       reason.addEventListener('change', () => { st.reason = reason.value; reason.classList.remove('needs-reason'); bus.emit('change'); });
       c.appendChild(reason);
 
+      if (col.nt === false) return c;          // scale already carries its own "not tested" value
+
       const nt = el('button', {
         class: 'nt-btn', type: 'button', text: 'NT',
         title: 'NT = Not Tested.\nUse this when the measurement could not be taken — the child would not cooperate, ' +
@@ -449,8 +452,12 @@ window.UI = (function () {
         }
         const tr = el('tr', { 'data-item': item.id });
         const nameCell = el('td', { class: 'rowname' }, [ el('span', { text: item.label }) ]);
-        if (item.norm && CFG.romMode === 'degrees')
+        if (spec.rowNote) {
+          const note = spec.rowNote(item);
+          if (note) nameCell.appendChild(el('small', { class: note.cls || '', text: note.text }));
+        } else if (item.norm && CFG.romMode === 'degrees') {
           nameCell.appendChild(el('small', { text: normLabel(item) }));
+        }
         tr.appendChild(nameCell);
 
         spec.columns.forEach(col => {

@@ -5,6 +5,8 @@
   const { $, $$, el, store, bus } = UI;
   const CFG = window.CFG, DEMO = window.DEMO;
   const age = UI.ageFromDob(DEMO.patient.dob);
+  const SET = CFG.settings;
+  const hide = (sel) => $$(sel).forEach(e => e.remove());
 
   /* =======================================================================
      Patient header + precaution banner
@@ -61,8 +63,18 @@
   };
   UI.chipset('#secondaryDx', store.secondaryDx, dxOpts);
 
+  /* Section 1 — the therapist is whoever is signed in, not a choice (client request) */
+  $('#therapistField').value = DEMO.therapist.name + '  ·  ' + DEMO.therapist.licence;
+
+  /* Section 2 — surgical history: free text or structured rows, per setting */
   store.surgeries = [];
-  UI.repeater('#surgeries', [
+  if (SET.surgicalHistoryFormat === 'text') {
+    $('#surgeryModeHint').textContent = '— free text (switch to structured rows in settings)';
+    $('#surgeries').appendChild(el('textarea', {
+      'data-field': 'surgicalHistoryText',
+      placeholder: 'e.g. Bilateral adductor tenotomy, Mar 2025, Children\u2019s Hospital Lahore'
+    }));
+  } else UI.repeater('#surgeries', [
     { key: 'proc', label: 'Procedure', w: '2fr', ph: 'e.g. Bilateral adductor tenotomy' },
     { key: 'date', label: 'Date', type: 'date', w: '1fr' },
     { key: 'place', label: 'Hospital / surgeon', w: '1.5fr' }
@@ -100,6 +112,8 @@
   $('#gaDays').appendChild(UI.suffixInput('days', { min: 0, max: 6, 'data-field': 'gaDays', placeholder: '—' }));
   $('#birthWeight').appendChild(UI.suffixInput('kg', { min: 0, max: 8, step: '0.01', 'data-field': 'birthWeight', placeholder: '—' }));
   $('#birthHc').appendChild(UI.suffixInput('cm', { min: 0, max: 60, step: '0.1', 'data-field': 'birthHc', placeholder: '—' }));
+  if (!SET.showGestationalAgeDays)     hide('.opt-gaDays');
+  if (!SET.showBirthHeadCircumference) hide('.opt-birthHc');
   $('#nicuDays').appendChild(UI.suffixInput('days', { min: 0, max: 365, 'data-field': 'nicuDays', placeholder: '—' }));
   $('#ventDays').appendChild(UI.suffixInput('days', { min: 0, max: 365, 'data-field': 'ventDays', placeholder: '—' }));
 
@@ -116,6 +130,23 @@
   });
 
   UI.pills('#birthComplications', CFG.options.birthComplications, 'birthComplications');
+
+  /* Schooling — yes/no first, grade only when relevant */
+  const schoolBox = $('#schoolAttending');
+  ['Yes', 'No'].forEach(o => {
+    const lab = el('label', {}, [ el('input', { type: 'radio', name: 'schoolAttending', value: o }), el('span', { text: o }) ]);
+    $('input', lab).addEventListener('change', () => {
+      $$('.school-detail').forEach(f => f.style.display = o === 'Yes' ? '' : 'none');
+      $$('#schoolAttending label').forEach(l => l.classList.add('unchecked'));
+      lab.classList.remove('unchecked');
+      bus.emit('change');
+    });
+    lab.classList.add('unchecked');
+    schoolBox.appendChild(lab);
+  });
+
+  /* Therapies currently received — your own rehab departments, not free text */
+  UI.pills('#otherTherapy', CFG.options.rehabDepartments.map(t => ({ v: t, t: t })), 'otherTherapy');
 
   const msHost = $('#milestones');
   CFG.milestones.forEach(m => {
@@ -137,19 +168,42 @@
     { key: 'priority', label: 'Priority', type: 'select', options: CFG.options.goalPriority, w: '1fr' }
   ], store.goals, '+ Add goal');
 
-  $('#prevPhysio').addEventListener('change', e => {
-    $$('.prev-physio').forEach(f => f.style.display = e.target.value === 'yes' ? '' : 'none');
-    bus.emit('change');
-  });
+  if (SET.showPreviousPhysiotherapy) {
+    $('.prev-physio-block').style.display = '';
+    $('#prevPhysio').addEventListener('change', e => {
+      $$('.prev-physio').forEach(f => f.style.display = e.target.value === 'yes' ? '' : 'none');
+      bus.emit('change');
+    });
+  } else hide('.prev-physio-block');
 
-  const onsetEl = $('[data-field="onsetDate"]');
-  onsetEl.addEventListener('change', () => {
-    if (!onsetEl.value) return;
-    const d = new Date(onsetEl.value), n = new Date();
-    let m = (n.getFullYear() - d.getFullYear()) * 12 + (n.getMonth() - d.getMonth());
-    $('[data-field="duration"]').value = m >= 12 ? Math.floor(m / 12) + ' yr ' + (m % 12) + ' mo' : m + ' months';
-    bus.emit('change');
-  });
+  /* Onset date and duration each derive the other — enter whichever the
+     family actually gave you (client request). */
+  const DAYS = { Days: 1, Weeks: 7, Months: 30.44, Years: 365.25 };
+  const dVal = $('#durationValue'), dUnit = $('#durationUnit'), onsetEl = $('#onsetDate');
+  CFG.options.durationUnits.forEach(u => dUnit.appendChild(el('option', { value: u, text: u })));
+  dUnit.value = 'Months';
+  let syncing = false;
+
+  function durationToDate() {
+    if (syncing || !dVal.value) return;
+    syncing = true;
+    const d = new Date();
+    d.setDate(d.getDate() - Math.round(parseFloat(dVal.value) * DAYS[dUnit.value]));
+    onsetEl.value = d.toISOString().slice(0, 10);
+    syncing = false; bus.emit('change');
+  }
+  function dateToDuration() {
+    if (syncing || !onsetEl.value) return;
+    syncing = true;
+    const days = Math.max(0, Math.round((Date.now() - new Date(onsetEl.value).getTime()) / 86400000));
+    const unit = days >= 730 ? 'Years' : days >= 61 ? 'Months' : days >= 14 ? 'Weeks' : 'Days';
+    dUnit.value = unit;
+    dVal.value = Math.round(days / DAYS[unit] * 10) / 10;
+    syncing = false; bus.emit('change');
+  }
+  dVal.addEventListener('input', durationToDate);
+  dUnit.addEventListener('change', durationToDate);
+  onsetEl.addEventListener('change', dateToDuration);
 
   /* =======================================================================
      Section 5 — systems review
@@ -193,33 +247,11 @@
   });
 
   /* =======================================================================
-     Sections 8 & 9 — simple draft grids
+     Section 9 — sensory (draft)
      ======================================================================= */
-  function simpleGrid(mount, rows, opts, header) {
-    const t = el('table', { class: 'dgrid' });
-    t.appendChild(el('thead', {}, [ el('tr', {}, [
-      el('th', { class: 'rowname', text: header }),
-      el('th', { text: 'Left' }), el('th', { text: 'Right' }), el('th', { text: 'Notes' }) ]) ]));
-    const tb = el('tbody');
-    rows.forEach(r => {
-      const tr = el('tr', {}, [ el('td', { class: 'rowname', text: r }) ]);
-      ['l', 'r'].forEach(() => tr.appendChild(el('td', {}, [
-        el('select', {}, [ el('option', { value: '', text: '—' }) ].concat(opts.map(o => el('option', { value: o, text: o })))) ])));
-      tr.appendChild(el('td', {}, [ el('input', { type: 'text', placeholder: '—' }) ]));
-      tb.appendChild(tr);
-    });
-    t.appendChild(tb);
-    $(mount).appendChild(el('div', { class: 'grid-wrap' }, [ t ]));
-  }
-  simpleGrid('#primitiveReflexes', ['ATNR', 'STNR', 'TLR', 'Moro', 'Palmar grasp', 'Plantar grasp'],
-    ['Integrated', 'Present', 'Obligatory', 'Not tested'], 'Reflex');
-  simpleGrid('#posturalReactions', ['Head righting', 'Protective extension — forward', 'Protective extension — sideways',
-    'Protective extension — backward', 'Equilibrium in sitting', 'Equilibrium in standing'],
-    ['Present', 'Emerging', 'Absent', 'Not tested'], 'Reaction');
-
   const sens = $('#sensory');
-  ['Light touch', 'Pain / temperature', 'Proprioception', 'Stereognosis'].forEach(s => {
-    sens.appendChild(el('div', { class: 'field' }, [ el('label', { text: s }),
+  ['Light touch', 'Pain / temperature', 'Proprioception', 'Stereognosis'].forEach(x => {
+    sens.appendChild(el('div', { class: 'field' }, [ el('label', { text: x }),
       el('select', {}, [ el('option', { value: '', text: 'Select…' }) ]
         .concat(['Intact', 'Impaired', 'Absent', 'Unable to test'].map(o => el('option', { value: o, text: o })))) ]));
   });
@@ -270,6 +302,113 @@
       { key: 'l', label: 'Left',  group: 'MRC GRADE', type: 'select', options: CFG.scales.mrc.options, suffix: '/5', side: 'L', pair: 'g' },
       { key: 'r', label: 'Right', group: 'MRC GRADE', type: 'select', options: CFG.scales.mrc.options, suffix: '/5', side: 'R', pair: 'g' },
       { key: 'notes', label: 'Notes', type: 'text', width: '220px' }
+    ]
+  });
+
+  /* =======================================================================
+     Section 8 — Pediatric Reflex Screening (client image 5)
+     ======================================================================= */
+  const reflexGrid = UI.buildGrid({
+    mount: '#grid-reflex', key: 'reflex', noun: 'reflexes',
+    pickerTitle: 'Select the reflexes you screened',
+    catalogue: CFG.reflexCatalogue, presets: CFG.presets.reflex, rowHeader: 'Reflex',
+    rowNote: item => ({
+      text: 'integrates by ~' + item.by + ' mo' + (age.months > item.by ? ' — past due for this child' : ''),
+      cls: age.months > item.by ? 'overdue' : ''
+    }),
+    columns: [
+      { key: 'status',  label: 'Status',   type: 'select', options: CFG.options.reflexStatus, nt: false },
+      { key: 'resp',    label: 'Response', type: 'select', options: CFG.options.reflexResponse, nt: false, optional: true },
+      { key: 'sig',     label: 'Clinical significance', type: 'select', options: CFG.options.reflexSignificance, nt: false, optional: true },
+      { key: 'remarks', label: 'Remarks',  type: 'text', width: '200px' }
+    ]
+  });
+
+  /* =======================================================================
+     Section 13 — WHO gross motor milestones (client image 4)
+     ======================================================================= */
+  function buildWho() {
+    const t = el('table', { class: 'dgrid' });
+    t.appendChild(el('thead', {}, [ el('tr', {}, [
+      el('th', { class: 'rowname', text: 'Gross motor skill' }),
+      el('th', { text: 'WHO window' }),
+      el('th', { text: 'Assessment' }),
+      el('th', { text: 'Age achieved' }),
+      el('th', { text: 'Interpretation' })
+    ]) ]));
+    const tb = el('tbody');
+    CFG.whoMilestones.forEach(m => {
+      const tr = el('tr', { 'data-who': m.id });
+      tr.appendChild(el('td', { class: 'rowname', text: m.label }));
+      tr.appendChild(el('td', { class: 'hint', text: m.win[0] + ' – ' + m.win[1] + ' mo' }));
+
+      const st = el('select', { 'data-field': m.id + '-status' },
+        [ el('option', { value: '', text: 'Select…' }) ]
+        .concat(CFG.options.grossMotorStatus.map(o => el('option', { value: o, text: o }))));
+      tr.appendChild(el('td', {}, [ st ]));
+
+      const si = UI.suffixInput('mo', { min: 0, max: 120, step: '0.5', 'data-field': m.id + '-age', placeholder: '—' });
+      const inp = $('input', si);
+      tr.appendChild(el('td', {}, [ si ]));
+
+      const flag = el('span', { class: 'ms-flag' });
+      tr.appendChild(el('td', {}, [ flag ]));
+
+      function evaluate() {
+        const v = parseFloat(inp.value);
+        if (st.value === 'Not achieved') {
+          flag.className = 'ms-flag show ' + (age.months > m.win[1] ? 'delay' : 'mild');
+          flag.textContent = age.months > m.win[1] ? 'Overdue — past the WHO window' : 'Not yet — still within window';
+          return;
+        }
+        if (st.value === 'Unable to test') { flag.className = 'ms-flag show mild'; flag.textContent = 'Not tested'; return; }
+        if (isNaN(v)) { flag.className = 'ms-flag'; flag.textContent = ''; return; }
+        if (v <= m.win[1]) { flag.className = 'ms-flag show ok';    flag.textContent = 'Within WHO window'; }
+        else               { flag.className = 'ms-flag show delay'; flag.textContent = 'Late — beyond ' + m.win[1] + ' mo'; }
+      }
+      st.addEventListener('change', () => { evaluate(); bus.emit('change'); });
+      inp.addEventListener('input', () => { evaluate(); bus.emit('change'); });
+
+      /* pre-fill from the matching milestone in section 3 — never typed twice */
+      if (m.from) {
+        const src = $('input[data-field="' + m.from + '"]');
+        if (src) src.addEventListener('input', () => {
+          if (!inp.value && src.value) { inp.value = src.value; if (!st.value) st.value = 'Achieved'; evaluate(); }
+        });
+      }
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    $('#grid-who').appendChild(el('div', { class: 'grid-wrap' }, [ t ]));
+    $('#grid-who').appendChild(el('div', { class: 'grid-legend' }, [
+      el('span', { html: '<b>WHO window</b> = 1st&ndash;99th percentile from the WHO Multicentre Growth Reference Study.' }),
+      el('span', { html: 'Values from section 3 pre-fill here automatically.' })
+    ]));
+  }
+  buildWho();
+
+  /* =======================================================================
+     Section 14 — Fine motor (client images 1-3)
+     ======================================================================= */
+  const domBox = $('#handDominance');
+  CFG.options.handDominance.forEach(o => {
+    const lab = el('label', {}, [ el('input', { type: 'radio', name: 'handDominance', value: o }), el('span', { text: o }) ]);
+    $('input', lab).addEventListener('change', () => {
+      $$('#handDominance label').forEach(l => l.classList.add('unchecked'));
+      lab.classList.remove('unchecked'); bus.emit('change');
+    });
+    lab.classList.add('unchecked');
+    domBox.appendChild(lab);
+  });
+  UI.refTable('#fmRef', CFG.scales.fineMotor);
+
+  const fineMotorGrid = UI.buildGrid({
+    mount: '#grid-finemotor', key: 'fineMotor', noun: 'domains',
+    pickerTitle: 'Select the fine motor domains you assessed',
+    catalogue: CFG.fineMotorCatalogue, presets: CFG.presets.fineMotor, rowHeader: 'Domain',
+    columns: [
+      { key: 'score', label: 'Score', type: 'select', options: CFG.scales.fineMotor.options, suffix: '/3' },
+      { key: 'notes', label: 'Notes', type: 'text', width: '260px' }
     ]
   });
 
@@ -346,14 +485,14 @@
   /* =======================================================================
      Validation  (C04 / C12)
      ======================================================================= */
-  const gridSpecs = { tone: toneGrid, rom: romGrid, strength: strengthGrid };
-  const gridSection = { tone: '10', rom: '11', strength: '12' };
-  const gridLabel = { tone: 'Muscle tone', rom: 'Range of motion', strength: 'Muscle strength' };
+  const gridSpecs   = { reflex: reflexGrid, tone: toneGrid, rom: romGrid, strength: strengthGrid, fineMotor: fineMotorGrid };
+  const gridSection = { reflex: '8',  tone: '10',          rom: '11',              strength: '12',             fineMotor: '14' };
+  const gridLabel   = { reflex: 'Reflex screening', tone: 'Muscle tone', rom: 'Range of motion', strength: 'Muscle strength', fineMotor: 'Fine motor' };
 
   function gridIssues(key) {
     const spec = gridSpecs[key], out = [];
     spec.catalogue.filter(i => store.selected[key].includes(i.id)).forEach(item => {
-      spec.columns.filter(c => c.type === 'measure' || c.type === 'select').forEach(col => {
+      spec.columns.filter(c => (c.type === 'measure' || c.type === 'select') && !c.optional).forEach(col => {
         const st = (store.grid[key][item.id] || {})[col.key] || {};
         if (st.nt && !st.reason) out.push(item.label + ' — ' + (col.group || '') + ' ' + col.label + ': "Not tested" needs a reason');
         else if (!st.nt && (st.v === '' || st.v === undefined)) out.push(item.label + ' — ' + (col.group || '') + ' ' + col.label + ' is empty');
@@ -384,6 +523,8 @@
     if (!UI.getPills('#overallTone').length)
       issues.push({ sec: '10', msg: 'Overall tone is required', el: $('#overallTone') });
     Object.keys(gridSpecs).forEach(k => {
+      const card = $('#sec-' + gridSection[k]);
+      if (card && card.classList.contains('hidden')) return;
       if (!store.selected[k].length)
         issues.push({ sec: gridSection[k], msg: gridLabel[k] + ': nothing selected — load the groups you tested, or state why this was not assessed' });
       gridIssues(k).forEach(m => issues.push({ sec: gridSection[k], msg: m }));
@@ -438,17 +579,18 @@
     return n;
   }
   let saveTimer = null;
+  const DATA_SECTIONS = SECTIONS.filter(x => x.num !== '15' && x.num !== '99').map(x => x.num);
   function refresh() {
     let started = 0;
-    ['1','2','3','4','5','6','7','8','9','10','11','12'].forEach(sec => {
+    DATA_SECTIONS.forEach(sec => {
       const item = $('.sec-item[data-sec="' + sec + '"]');
       if (!item) return;
       const n = sectionFilled(sec);
       item.classList.remove('state-complete', 'state-partial');
       if (n > 0) { started++; item.classList.add(n > 3 ? 'state-complete' : 'state-partial'); }
     });
-    $('#progTxt').textContent = started + ' of 12 sections started';
-    $('#progBar').style.width = Math.round(started / 12 * 100) + '%';
+    $('#progTxt').textContent = started + ' of ' + DATA_SECTIONS.length + ' sections started';
+    $('#progBar').style.width = Math.round(started / DATA_SECTIONS.length * 100) + '%';
     clearTimeout(saveTimer);
     $('#saveMsg').textContent = 'Saving…';
     saveTimer = setTimeout(() => {
